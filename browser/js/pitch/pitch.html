@@ -1,0 +1,22 @@
+<div id="detector" class="vague">
+    <div class="pitch"><span id="pitch">--</span>Hz</div>
+    <div class="note"><span id="note">--</span></div>
+    <canvas id="output" width=300 height=42></canvas>
+    <div id="detune"><span id="detune_amt">--</span><span id="flat">cents &#9837;</span><span id="sharp">cents &#9839;</span></div>
+</div>
+<div class="row">
+    <div class="col-lg-7">
+        <canvas id="voice" width=300 height=42></canvas>
+    </div>
+    <div class="col-lg-5">
+      <h1>{{randNote|| '?'}}</h1>
+      <canvas id="musical-note" width=700 height=100></canvas>
+
+
+
+       <div> <button type="button" class="btn btn-primary" ng-click="giveNote()">Give Note!</button> </div>
+       <div>  <button type="button" class="btn btn-warning" ng-click="repeatNote()">Repeat Note!</button> </div>
+       <div>  <button type="button" class="btn btn-danger" ng-click="playPrev()">Previous Note!</button> </div>
+       <div>  <button type="button" class="btn btn-success" ng-click="playNext()">Next Note!</button> </div>
+    </div>
+</div>
