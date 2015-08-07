@@ -1,6 +1,8 @@
 app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
     var audioContext;
     var gainNode;
+    var scriptProcessor;
+    var correlationWorker;
 
     function MicrophoneSample(context) {
         audioContext = context;
@@ -21,12 +23,15 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
             this.onStreamError.bind(this));
     };
 
-    MicrophoneSample.prototype.listen = function(){
+    MicrophoneSample.prototype.listen = function() {
         gainNode.gain.value = 1;
+        this.analysePitch();
     };
 
-    MicrophoneSample.prototype.pause=function(){
-        gainNode.gain.value =0;
+    MicrophoneSample.prototype.pause = function() {
+        gainNode.gain.value = 0;
+        correlationWorker.terminate();
+        scriptProcessor.onaudioprocess={};
     };
 
 
@@ -57,46 +62,52 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
         filter.connect(gainNode);
         gainNode.connect(analyserAudioNode);
         analyserAudioNode.connect(analyser);
+        /// <--- Solution 2 --->
+        // Setup a timer to visualize some stuff.
+        window.requestAnimationFrame(this.visualize.bind(this));
+    };
 
-        /// <---- Solution 2--->
-        ///
+
+    /// <---- Solution 2--->
+    MicrophoneSample.prototype.analysePitch = function() {
         var C2 = 65.41; // C2 note, in Hz.
         var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
         var testFrequencies = [];
-        var octave =2;
+        var octave = 2;
         for (var i = 0; i < 30; i++) {
-            if(!i%12) octave++;
+            if (!i % 12) octave++;
             var noteFrequency = C2 * Math.pow(2, i / 12);
-            var note_name = notes[i % 12];
+            var noteName = notes[i % 12];
             var note = {
                 "frequency": noteFrequency,
-                "name": note_name+octave
+                "name": noteName + octave
             };
             var just_above = {
                 "frequency": noteFrequency * Math.pow(2, 1 / 48),
-                "name": note_name+octave + " (a bit sharp)"
+                "name": noteName + octave + " (a bit sharp)"
             };
             var just_below = {
                 "frequency": noteFrequency * Math.pow(2, -1 / 48),
-                "name": note_name+octave + " (a bit flat)"
+                "name": noteName + octave + " (a bit flat)"
             };
             testFrequencies = testFrequencies.concat([just_below, note, just_above]);
         }
-        var correlationWorker = new Worker(CorrelationWork);
-        console.log(correlationWorker);
+        correlationWorker = new Worker(CorrelationWork); //Will run on the user CPUs
+
         correlationWorker.addEventListener("message", interpretCorrelationResult);
 
-        var scriptProcessor = audioContext.createScriptProcessor(1024, 1, 1);
+        scriptProcessor = audioContext.createScriptProcessor(1024, 1, 1);
         // console.log(scriptProcessor);
-        analyser.connect(scriptProcessor);
+        this.analyser.connect(scriptProcessor);
         scriptProcessor.connect(audioContext.destination);
         var buffer = [];
         var sample_length_milliseconds = 100;
         var recording = true;
 
         //listen to event;
+        // var i =0;
         scriptProcessor.onaudioprocess = function(event) {
-            // console.log("called");
+        // console.log("called",i++)
             if (!recording) return;
             buffer = buffer.concat(Array.prototype.slice.call(event.inputBuffer.getChannelData(0)));
             if (buffer.length > sample_length_milliseconds * audioContext.sampleRate / 1000) {
@@ -112,7 +123,6 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
                 }, 250);
             }
         };
-
 
         function interpretCorrelationResult(event) {
             var timeseries = event.data.timeseries;
@@ -142,19 +152,13 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
             // console.log(confidence);
             if (confidence > confidenceThreshold) {
                 var dominantFrequency = testFrequencies[maximum_index];
-                console.log(average,dominantFrequency.name,frequency);
+                console.log(average, dominantFrequency.name, frequency);
                 document.getElementById("note-name").textContent = dominantFrequency.name;
                 document.getElementById("frequency").textContent = dominantFrequency.frequency;
             }
         }
-
-
-
-
-        /// <--- Solution 2 --->
-        // Setup a timer to visualize some stuff.
-        window.requestAnimationFrame(this.visualize.bind(this));
     };
+
 
     MicrophoneSample.prototype.onStreamError = function(e) {
         console.error('Error getting microphone', e);
