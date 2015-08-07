@@ -1,4 +1,4 @@
-app.factory('Note', function() {
+app.factory('note', function() {
     return {
         "432": [{
             "note": "C0",

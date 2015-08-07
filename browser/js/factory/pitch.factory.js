@@ -1,5 +1,28 @@
 // Factory that will analyse the pitch from the microphone
-app.factory('pitch',function(){
+app.factory('pitch',function(note){
+  var NotesArray=note["440"];
+  console.log(NotesArray);
+
+  var findClosestNote = function (freq) {
+    // Use binary search to find the closest note
+    var low = -1;
+    var high = NotesArray.length;
+    while (high - low > 1) {
+      var pivot = Math.round((low + high) / 2);
+      if (NotesArray[pivot].frequency <= freq) {
+        low = pivot;
+      } else {
+        high = pivot;
+      }
+    }
+
+    if (Math.abs(NotesArray[high].frequency - freq) <= Math.abs(NotesArray[low].frequency - freq)) {
+      // notes[high] is closer to the frequency we found
+      return NotesArray[high];
+    }
+
+    return NotesArray[low];
+  };
 
   var findFundamentalFreq = function(buffer, sampleRate) {
   // We use Autocorrelation to find the fundamental frequency.
@@ -43,7 +66,8 @@ app.factory('pitch',function(){
 };
 
 return {
-  findFundamentalFreq: findFundamentalFreq
+  findFundamentalFreq: findFundamentalFreq,
+  findClosestNote: findClosestNote
 };
 
 

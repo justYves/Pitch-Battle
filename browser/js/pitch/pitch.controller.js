@@ -7,7 +7,7 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, MicrophoneSample
 
   var buflen = 1024;
   var buf = new Float32Array(buflen);
-  var sharp = false;
+  var sharp = $scope.sharp = false;
 
 // <----- Need to move to factory ----->
 //Note Generator
@@ -20,18 +20,19 @@ keys.forEach(function(key){
     noteRange.push(note+key);
   });
 });
-console.log(noteRange);
+// console.log("used Range:",noteRange);
 
 var randNote;
 var synth = new Tone.SimpleSynth().toMaster();
 
 $scope.giveNote = function() {
     randNote = noteRange[Math.floor(Math.random()*(noteRange.length))];
-    console.log(randNote);
+    // console.log(randNote);
     MusicalCanvas.addNote(canvas,randNote);
     //create one of Tone's built-in synthesizers and connect it to the master output
     //play a middle c for the duration of an 8th note
     $scope.play(randNote);
+    voice.listen();
   };
 
   $scope.repeatNote =function(){
@@ -58,8 +59,11 @@ $scope.giveNote = function() {
 
   $scope.play = function(note){
         $scope.randNote = note;
+        $scope.randNoteFreq = Math.round(synth.noteToFrequency(note));
         synth.triggerAttackRelease(note, "8n");
       };
+
+  $scope.pause = voice.pause;
 
 //Create
   var canvas = $("#musical-note")[0];
