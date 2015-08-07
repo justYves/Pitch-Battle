@@ -1,12 +1,15 @@
-app.factory('MicrophoneSample',function($rootScope){
+app.factory('MicrophoneSample', function(pitch,$log) {
   var audioContext;
+
   function MicrophoneSample(context) {
-    audioContext=context;
+    audioContext = context;
     this.WIDTH = 640;
     this.HEIGHT = 480;
     this.getMicrophoneInput();
     this.canvas = $('#voice')[0];
-  }
+    this.sungNote =$('#note');
+    this.sungCents = $('#cents');
+  };
 
   MicrophoneSample.prototype.getMicrophoneInput = function() {
     navigator.getUserMedia({
@@ -18,22 +21,65 @@ app.factory('MicrophoneSample',function($rootScope){
 
 
   MicrophoneSample.prototype.onStream = function(stream) {
-    var input = audioContext.createMediaStreamSource(stream);
+    var input = audioContext.createMediaStreamSource(stream); //<- convert it to a stream source
     var filter = audioContext.createBiquadFilter();
     // filter.frequency.value = 60.0;
     // filter.type = filter.NOTCH;
     // filter.Q = 10.0;
 
+    // <---- This is for the graph--->
     var analyser = audioContext.createAnalyser();
+    this.analyser = analyser;
+
+    //second analyser <--- this is for the pitch --->
+    var analyserAudioNode = audioContext.createAnalyser();
+    this.analyserAudioNode = analyserAudioNode;
+    analyserAudioNode.fftSize = 2048;
+    this.detectPitch.bind(this)();
 
     // Connect graph.
     input.connect(filter);
-    filter.connect(analyser);
+    filter.connect(analyserAudioNode);
+    analyserAudioNode.connect(analyser);
 
-    this.analyser = analyser;
+    var script_processor = audioContext.createScriptProcessor(1024, 1, 1);
+
+
     // Setup a timer to visualize some stuff.
     window.requestAnimationFrame(this.visualize.bind(this));
   };
+
+  MicrophoneSample.prototype.detectPitch = function() {
+    var analyserAudioNode = this.analyserAudioNode;
+    var buffer = new Uint8Array(analyserAudioNode.fftSize);
+    analyserAudioNode.getByteTimeDomainData(buffer);
+    var fundalmentalFreq = pitch.findFundamentalFreq(buffer, audioContext.sampleRate);
+    console.log(fundalmentalFreq);
+    if (fundalmentalFreq !== -1) {
+      var note = findClosestNote(fundalmentalFreq, notesArray);
+      var cents = findCentsOffPitch(fundalmentalFreq, note.frequency);
+      updateNote(note.note);
+      updateCents(cents);
+    } else {
+      this.updateNote.bind(this)('--');
+      // updateCents(-50);
+    }
+
+    window.requestAnimationFrame(this.detectPitch.bind(this));
+  };
+
+  MicrophoneSample.prototype.updateNote = function(note){
+    // console.log(this.sungNote);
+    this.sungNote.text(note);
+  };
+
+  MicrophoneSample.prototype.updateCents = function(cents){
+        $('#cents').text(cents)
+  };
+
+
+
+
 
   MicrophoneSample.prototype.onStreamError = function(e) {
     console.error('Error getting microphone', e);
@@ -57,5 +103,8 @@ app.factory('MicrophoneSample',function($rootScope){
     }
     window.requestAnimationFrame(this.visualize.bind(this));
   };
+
+
+
   return MicrophoneSample;
 });
