@@ -32,7 +32,7 @@ $scope.giveNote = function() {
     //create one of Tone's built-in synthesizers and connect it to the master output
     //play a middle c for the duration of an 8th note
     $scope.play(randNote);
-    voice.listen();
+    voice.listen(randNote);
   };
 
   $scope.repeatNote =function(){

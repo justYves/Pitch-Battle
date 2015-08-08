@@ -7,15 +7,16 @@ app.factory('CorrelationWork', function(pitch, $log) {
                 var timeseries = event.data.timeseries;
                 var testFrequencies = event.data.testFrequencies;
                 var sampleRate = event.data.sampleRate;
-                var amplitudes = compute_correlations(timeseries, testFrequencies, sampleRate);
+                var amplitudes = computeCorrelations(timeseries, testFrequencies, sampleRate);
                 self.postMessage({
                     "timeseries": timeseries,
                     "frequencyAmplitudes": amplitudes
                 });
             };
 
-            function compute_correlations(timeseries, testFrequencies, sampleRate) {
-                // 2pi * frequency gives the appropriate period to sine.
+            function computeCorrelations(timeseries, testFrequencies, sampleRate) {
+                // We are computing: ∑tϕ(t)sin(2πft),
+                // 2pi * frequency gives the appropriate period to sine. 1/sampleRAte = frequency
                 // timeseries index / sampleRate gives the appropriate time coordinate.
                 //
                 var scale_factor = 2 * Math.PI / sampleRate;
@@ -23,8 +24,8 @@ app.factory('CorrelationWork', function(pitch, $log) {
                     function(f) {
                         // console.log("called");
                         var frequency = f.frequency;
-                        // console.log("frequency",frequency);
                         // Represent a complex number as a length-2 array [ real, imaginary ].
+                        // eix=cosx+isinx
                         var accumulator = [0, 0];
                         for (var t = 0; t < timeseries.length; t++) {
                             accumulator[0] += timeseries[t] * Math.cos(scale_factor * frequency * t);

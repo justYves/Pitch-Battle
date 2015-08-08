@@ -3,6 +3,8 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
     var gainNode;
     var scriptProcessor;
     var correlationWorker;
+    var analyzedTones = [];
+    var noteToMatch;
 
     function MicrophoneSample(context) {
         audioContext = context;
@@ -10,6 +12,7 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
         this.HEIGHT = 480;
         this.getMicrophoneInput();
         this.canvas = $('#voice')[0];
+        this.isListening = false;
         //<---- Solution 1---->
         // this.sungNote =$('#note');
         // this.sungCents = $('#cents');
@@ -23,12 +26,17 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
             this.onStreamError.bind(this));
     };
 
-    MicrophoneSample.prototype.listen = function() {
+    MicrophoneSample.prototype.listen = function(note) {
+        noteToMatch = note.slice(0,-1);
         gainNode.gain.value = 1;
+        this.isListening = true;
         this.analysePitch();
     };
 
     MicrophoneSample.prototype.pause = function() {
+        this.isListening = false;
+        console.log(noteToMatch);
+        console.log(analyzedTones);
         gainNode.gain.value = 0;
         correlationWorker.terminate();
         scriptProcessor.onaudioprocess={};
@@ -69,7 +77,6 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
 
 
     /// <---- Solution 2--->
-    MicrophoneSample.prototype.analysePitch = function() {
         var C2 = 65.41; // C2 note, in Hz.
         var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
         var testFrequencies = [];
@@ -80,28 +87,29 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
             var noteName = notes[i % 12];
             var note = {
                 "frequency": noteFrequency,
-                "name": noteName + octave
+                "name": noteName
             };
             var just_above = {
                 "frequency": noteFrequency * Math.pow(2, 1 / 48),
-                "name": noteName + octave + " (a bit sharp)"
+                "name": noteName  +" (a bit sharp)"
             };
             var just_below = {
                 "frequency": noteFrequency * Math.pow(2, -1 / 48),
-                "name": noteName + octave + " (a bit flat)"
+                "name": noteName +" (a bit flat)"
             };
             testFrequencies = testFrequencies.concat([just_below, note, just_above]);
         }
+    MicrophoneSample.prototype.analysePitch = function() {
         correlationWorker = new Worker(CorrelationWork); //Will run on the user CPUs
 
-        correlationWorker.addEventListener("message", interpretCorrelationResult);
+        correlationWorker.addEventListener("message", interpretCorrelationResult.bind(this));
 
         scriptProcessor = audioContext.createScriptProcessor(1024, 1, 1);
         // console.log(scriptProcessor);
         this.analyser.connect(scriptProcessor);
         scriptProcessor.connect(audioContext.destination);
         var buffer = [];
-        var sample_length_milliseconds = 100;
+        var sampleLengthMilliseconds = 100;
         var recording = true;
 
         //listen to event;
@@ -110,7 +118,7 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
         // console.log("called",i++)
             if (!recording) return;
             buffer = buffer.concat(Array.prototype.slice.call(event.inputBuffer.getChannelData(0)));
-            if (buffer.length > sample_length_milliseconds * audioContext.sampleRate / 1000) {
+            if (buffer.length > sampleLengthMilliseconds * audioContext.sampleRate / 1000) {
                 recording = false;
                 correlationWorker.postMessage({
                     "timeseries": buffer,
@@ -152,9 +160,17 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
             // console.log(confidence);
             if (confidence > confidenceThreshold) {
                 var dominantFrequency = testFrequencies[maximum_index];
-                console.log(average, dominantFrequency.name, frequency);
+                // console.log(average, dominantFrequency.name, frequency);
+                // document.getElementById("frequency").textContent = dominantFrequency.frequency;
                 document.getElementById("note-name").textContent = dominantFrequency.name;
-                document.getElementById("frequency").textContent = dominantFrequency.frequency;
+                analyzedTones.push(dominantFrequency.name.slice(0,2).trim());
+                if(analyzedTones.length>7){
+                    for(var i=1; i<=4; i++){ //Here for difficulty
+                        if(noteToMatch!= analyzedTones[analyzedTones.length-i]) return false;
+                    }
+                    this.pause();
+                }
+
             }
         }
     };
@@ -183,36 +199,52 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
         window.requestAnimationFrame(this.visualize.bind(this));
     };
 
+    var aggregateBuffer = [];
+    var i=0;
     // <---- Solution 1 ---->
-    MicrophoneSample.prototype.detectPitch = function() {
-        var analyserAudioNode = this.analyserAudioNode;
-        var buffer = new Uint8Array(analyserAudioNode.fftSize);
-        analyserAudioNode.getByteTimeDomainData(buffer);
-        var fundamentalFreq = pitch.findFundamentalFreq(buffer, audioContext.sampleRate);
-        console.log(fundamentalFreq);
-        if (fundamentalFreq !== -1) {
-            var note = pitch.findClosestNote(fundamentalFreq);
-            console.log(note);
-            // var cents = findCentsOffPitch(fundamentalFreq, note.frequency);
-            this.updateNote(note.note);
-            // this.updateCents(cents);
-        } else {
-            this.updateNote('--');
-            this.updateCents(-50);
-        }
+    // MicrophoneSample.prototype.detectPitch = function() {
+    //     var analyserAudioNode = this.analyserAudioNode;
 
-        window.requestAnimationFrame(this.detectPitch.bind(this));
-    };
+    //     var buffer = new Uint8Array(analyserAudioNode.fftSize);
+    //     // analyserAudioNode.getByteTimeDomainData(buffer);
+    //     analyserAudioNode.getByteFrequencyData(buffer);
 
-    MicrophoneSample.prototype.updateNote = function(note) {
-        // console.log(this.sungNote);
-        this.sungNote.text(note);
-    };
+    //     var tempArray = [].slice.call(buffer).filter(function(f){
+    //         return f>15;
+    //     });
+    //     var average = tempArray.reduce(function(a,b){
+    //         return a+b;
+    //     },0)/tempArray.length;
+    //     if (this.isListening) console.log(average);
 
-    MicrophoneSample.prototype.updateCents = function(cents) {
-        // console.log(this.Cents);
-        this.sungCents.text(cents)
-    };
+    //     // aggregateBuffer
+
+    //     // var fundamentalFreq = pitch.findFundamentalFreq(buffer, audioContext.sampleRate);
+    //     // console.log(fundamentalFreq);
+
+    //     // if (fundamentalFreq !== -1) {
+    //     //     var note = pitch.findClosestNote(fundamentalFreq);
+    //     //     console.log(note);
+    //     //     // var cents = findCentsOffPitch(fundamentalFreq, note.frequency);
+    //     //     this.updateNote(note.note);
+    //     //     // this.updateCents(cents);
+    //     // } else {
+    //     //     this.updateNote('--');
+    //     //     this.updateCents(-50);
+    //     // }
+
+    //     window.requestAnimationFrame(this.detectPitch.bind(this));
+    // };
+
+    // MicrophoneSample.prototype.updateNote = function(note) {
+    //     // console.log(this.sungNote);
+    //     this.sungNote.text(note);
+    // };
+
+    // MicrophoneSample.prototype.updateCents = function(cents) {
+    //     // console.log(this.Cents);
+    //     this.sungCents.text(cents)
+    // };
 
     // <---- Solution 1 ---->
 
