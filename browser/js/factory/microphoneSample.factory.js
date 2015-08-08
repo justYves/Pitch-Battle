@@ -13,6 +13,8 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
         this.getMicrophoneInput();
         this.canvas = $('#voice')[0];
         this.isListening = false;
+        this.startTime;
+        this.stopTime;
         //<---- Solution 1---->
         // this.sungNote =$('#note');
         // this.sungCents = $('#cents');
@@ -27,7 +29,9 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
     };
 
     MicrophoneSample.prototype.listen = function(note) {
+        analyzedTones=[];
         noteToMatch = note.slice(0,-1);
+        this.startTime = audioContext.currentTime;
         gainNode.gain.value = 1;
         this.isListening = true;
         this.analysePitch();
@@ -35,8 +39,9 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
 
     MicrophoneSample.prototype.pause = function() {
         this.isListening = false;
-        console.log(noteToMatch);
+        console.log("tomatch",noteToMatch);
         console.log(analyzedTones);
+        console.log("time:",audioContext.currentTime-this.startTime + ' seconds.');
         gainNode.gain.value = 0;
         correlationWorker.terminate();
         scriptProcessor.onaudioprocess={};
