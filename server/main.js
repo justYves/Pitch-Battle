@@ -12,7 +12,13 @@ var options ={
     cert: fs.readFileSync(__dirname +'/cert.pem')
 };
 // Create a node server instance! cOoL!
+//
+// HTTPS
 var server = require('https').createServer(options);
+
+//HTTP
+// var server = require('http').createServer();
+
 
 var createApplication = function () {
     var app = require('./app');

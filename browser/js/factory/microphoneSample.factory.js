@@ -204,8 +204,8 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
         window.requestAnimationFrame(this.visualize.bind(this));
     };
 
-    var aggregateBuffer = [];
-    var i=0;
+    // var aggregateBuffer = [];
+    // var i=0;
     // <---- Solution 1 ---->
     // MicrophoneSample.prototype.detectPitch = function() {
     //     var analyserAudioNode = this.analyserAudioNode;
