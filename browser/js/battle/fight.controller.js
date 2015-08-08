@@ -1,6 +1,7 @@
 app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $state, MicrophoneSample, MusicalCanvas, mySocket) {
   $scope.opponent = opponent;
   $scope.user = user.getAll();
+  var isOver =false;
 
   //Emit a hit to opponents
   $scope.correct = function(){
@@ -22,8 +23,9 @@ app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $st
 
   //If user is leaving the room;
   $scope.$on('$locationChangeStart', function (scope, next, current) {
-
-    // $state.go('home');
-    console.log(scope,next,current); //Need to disconnect from room
+    if(!isOver){
+      console.log(scope,next,current); //Need to disconnect from room
+      // $state.go('home');
+    }
   });
 });

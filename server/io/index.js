@@ -45,11 +45,17 @@ module.exports = function(server) {
 
         //notify user1
         user1.join(newRoom.id);
+        user1.room = newRoom.id;
         user1.emit('foundOpponents', user2.name); //change angular state
 
         //notify user2
         user2.join(newRoom.id);
+        user2.room = newRoom.id;
         user2.emit('foundOpponents', user1.name); //change angular state
+
+        io.sockets.in(newRoom.id).on('leave', function(){
+          console.log("someone left the room!");
+        });
 
         setTimeout(function() {
           io.to(newRoom.id).emit('fight', newRoom.id);
@@ -95,6 +101,18 @@ module.exports = function(server) {
     client.on('disconnect', function() {
       console.log(chalk.red('\t socket.io:: client disconnected ' + client.id));
       console.log(chalk.blue("Total connected user: ", --connectedUser));
+
+      //delete from room
+      if(client.room) {
+        console.log(client.id + " left room " + client.room);
+        client.leave(client.room);
+        delete rooms[client.room];
+        io.sockets.in(client.room).emit('leave');
+      }
+      //delete from waiting Room
+      delete waiting[client.id];
+
+      //delet from connected client
       delete clients[client.id];
     });
 
