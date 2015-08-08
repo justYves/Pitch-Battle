@@ -1,12 +1,18 @@
 'use strict';
 var chalk = require('chalk');
+var fs = require('fs');
 
 // Requires in ./db/index.js -- which returns a promise that represents
 // mongoose establishing a connection to a MongoDB database.
 var startDb = require('./db');
 
+
+var options ={
+    key: fs.readFileSync(__dirname +'/key.pem'),
+    cert: fs.readFileSync(__dirname +'/cert.pem')
+};
 // Create a node server instance! cOoL!
-var server = require('http').createServer();
+var server = require('https').createServer(options);
 
 var createApplication = function () {
     var app = require('./app');
@@ -29,3 +35,10 @@ startDb.then(createApplication).then(startServer).catch(function (err) {
     console.error('Process terminating . . .');
     process.kill(1);
 });
+
+//No using DB for now
+// //startDb.then(createApplication).then(startServer).catch(function (err) {
+//     console.error('Initialization error:', chalk.red(err.message));
+//     console.error('Process terminating . . .');
+//     process.kill(1);
+// });
