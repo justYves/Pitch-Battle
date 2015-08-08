@@ -1,0 +1,29 @@
+<h1>Admin DashBoard</h1>
+<button ng-click="getInfo()"> Refresh</button>
+
+
+<h2>All Connected Users:</h2>
+<ul>
+    <li ng-repeat="client in clients">
+       <strong> {{client.name}} </strong>{{client.id}}
+    </li>
+</ul>
+
+<h2>Users in the waiting:</h2>
+<ul>
+    <li ng-repeat="player in waitingRoom">
+        <strong>{{player.name}} </strong> {{player.id}}
+    </li>
+</ul>
+
+<h2>User Currently Playing:</h2>
+<!-- <pre>{{rooms}}</pre> -->
+
+<ul>
+    <li ng-repeat="room in rooms">
+        Room {{$index+1}}: {{room.id}}
+        <ul>
+            <li ng-repeat="player in room.players">player #{{$index+1}}: <strong> {{player.name}}  </strong>{{player.id}}</li>
+        </ul>
+    </li>
+</ul>
