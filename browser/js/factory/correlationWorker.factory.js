@@ -1,4 +1,4 @@
-app.factory('CorrelationWork', function(pitch, $log) {
+app.factory('CorrelationWork', function() {
     var blobURL = URL.createObjectURL(new Blob(['(',
         function() {
             //Long-running work here

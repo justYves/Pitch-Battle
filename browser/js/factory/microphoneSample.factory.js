@@ -1,4 +1,4 @@
-app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
+app.factory('MicrophoneSample', function($log, CorrelationWork) {
     var audioContext;
     var gainNode;
     var scriptProcessor;
@@ -40,7 +40,7 @@ app.factory('MicrophoneSample', function(pitch, $log, CorrelationWork) {
     MicrophoneSample.prototype.pause = function() {
         this.isListening = false;
         console.log("tomatch",noteToMatch);
-        console.log(analyzedTones);
+        console.log("analyzed Tones",analyzedTones);
         console.log("time:",audioContext.currentTime-this.startTime + ' seconds.');
         gainNode.gain.value = 0;
         correlationWorker.terminate();
