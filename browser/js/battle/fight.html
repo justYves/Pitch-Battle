@@ -2,13 +2,15 @@
 <div class="row">
     <div class="col-sm-12 text-center">
         <h2>{{messageLog}} <span ng-show="!!seconds">({{seconds}} s.)</span></h2>
-        <h3>ROUND:{{round}} NOTE: {{currentNote}}</h3>
+        <h3>ROUND:{{round}} NOTE: {{currentNote}}</h3>  <canvas id="musical-note" width=100 height=100></canvas>
     </div>
     <div class="col-sm-6">
         <div class="row">
             <div class="col-xs-6">
                 <div>{{user.name}}</div>
                 <div>hp: {{user.hp}}</div>
+                      <h1>Your current pitch: <span id="note-name"></span></h1>
+                        <canvas id="voice" width=300 height=42></canvas>
                 <button ng-click="correct()">correct note!</button>
             </div>
             <div class="col-xs-6">

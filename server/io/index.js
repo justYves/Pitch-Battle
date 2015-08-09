@@ -14,7 +14,7 @@ module.exports = function(server) {
   var interval = 2000; //ms for note to appear
 
 
-// console.log("!!!!!",randNote);
+  // console.log("!!!!!",randNote);
   //io Logic Here
   var connectedUser = 0;
   io.on('connection', function(client) {
@@ -30,9 +30,9 @@ module.exports = function(server) {
       if (Object.keys(waiting).length >= 2) {
 
         //<---- Random ---> NOT WORKING
-        var user1 = waiting[Object.keys(waiting)[Math.floor((Math.random())*(Object.keys(waiting).length-1))]];
+        var user1 = waiting[Object.keys(waiting)[Math.floor((Math.random()) * (Object.keys(waiting).length - 1))]];
         delete waiting[user1.id];
-        var user2 = waiting[Object.keys(waiting)[Math.floor((Math.random())*(Object.keys(waiting).length-1))]];
+        var user2 = waiting[Object.keys(waiting)[Math.floor((Math.random()) * (Object.keys(waiting).length - 1))]];
         delete waiting[user2.id];
 
         // var index = Object.keys(waiting).length-1;
@@ -55,13 +55,13 @@ module.exports = function(server) {
         user2.room = newRoom.id;
         user2.emit('foundOpponents', user1.name); //change angular state
 
-        io.sockets.in(newRoom.id).on('leave', function(){
+        io.sockets.in(newRoom.id).on('leave', function() {
           console.log("someone left the room!");
         });
 
         setTimeout(function() {
           io.to(newRoom.id).emit('fight', newRoom.id);
-          io.to(newRoom.id).emit('new note',randNote())
+          io.to(newRoom.id).emit('new note', randNote())
         }, interval);
       }
     }
@@ -69,13 +69,13 @@ module.exports = function(server) {
     function Room(user1, user2) {
       this.id = uuid.v4().toString();
       this.round = 1;
-      this.currentNote='';
+      this.currentNote = '';
       this.players = [{
-        name:user1.name,
-        id:user1.id
+        name: user1.name,
+        id: user1.id
       }, {
-        name:user2.name,
-        id:user2.id
+        name: user2.name,
+        id: user2.id
       }];
     }
 
@@ -83,15 +83,15 @@ module.exports = function(server) {
     //Emit to a specific room:
     client.on('room', function(roomId, msg) {
       client.broadcast.to(roomId).emit(msg);
-      if(msg==='pitchSlap'){
+      if (msg === 'pitchSlap') {
         setTimeout(function() {
-            io.to(roomId).emit('new note',randNote());
+          io.to(roomId).emit('new note', randNote());
         }, interval);
       }
     });
 
     // Opponent disconnected
-    client.on('return to Waiting',function(){
+    client.on('return to Waiting', function() {
       client.leave(client.room);
     });
 
@@ -99,15 +99,8 @@ module.exports = function(server) {
     client.on('ready', function(from, msg) {
       client.name = from;
       waiting[client.id] = client;
-      // console.log('received message from', from, JSON.stringify(msg));
-      // console.log('broadcasting message');
       console.log(from, msg);
       console.log(chalk.yellow("Users looking for opponents: ", Object.keys(waiting).length));
-      // io.sockets.emit('broadcast', {
-      //   payload: msg,
-      //   source: from
-      // });
-      // console.log('broadcast complete');
       matchUsers();
     });
 
@@ -117,7 +110,7 @@ module.exports = function(server) {
       console.log(chalk.blue("Total connected user: ", --connectedUser));
 
       //delete from room
-      if(client.room) {
+      if (client.room) {
         console.log(client.id + " left room " + client.room);
         client.leave(client.room);
         delete rooms[client.room];

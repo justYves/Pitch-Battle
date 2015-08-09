@@ -1,4 +1,7 @@
-app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, opponent) {
+app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, opponent,MicrophoneSample) {
+  var audioContext = new window.AudioContext;
+  $scope.voice = new MicrophoneSample(audioContext);
+  $scope.voice.getMicrophoneInput(ready);
   $scope.nickName = user.getName();
   $scope.messageLog = 'is Ready to  Pitch battle!';
   $scope.opponent = opponent;
@@ -13,9 +16,12 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
   };
 
   //Make the user ready to battle
-  mySocket.on('connect', function() {
+  function ready(stream){
+    $scope.voice.stream = stream;
+    $scope.$digest;
     mySocket.emit('ready', $scope.nickName, $scope.messageLog);
-  });
+  }
+
 
   //register the player ID
   mySocket.on('connection successfull', function(id) {

@@ -16,7 +16,7 @@ app.config(function ($stateProvider) {
     .state('battle.fight',{
         // url:'/fight',
         templateUrl: "js/battle/fight.html",
-        controller: "FightCtrl"
+        controller: "FightCtrl",
     })
     .state('battle.end',{
         templateUrl:"js/battle/end.html"

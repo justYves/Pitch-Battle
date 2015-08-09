@@ -7,7 +7,7 @@ var range =[];
 
 keys.forEach(function(key){
   notes.forEach(function(note){
-    if(note+key==="F3") push = true;
+    if(note+key==="A3") push = true;
     if(push) range.push(note+key);
     if(note+key==="F5") push =false;
   });

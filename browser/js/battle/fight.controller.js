@@ -6,7 +6,21 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   $scope.user = user.getAll();
   $scope.currentNote = '';
   var isOver = false;
+  var voice = $scope.voice;
+  voice.onStream();
 
+  //Create Music canvas
+  var canvas = $("#musical-note")[0];
+  voice.canvas = $('#voice')[0];
+  MusicalCanvas.init(canvas);
+
+  //Create new audio context <- maybe move to parent controller?
+  // var audioContext = new window.AudioContext;
+  // var voice = new MicrophoneSample(audioContext);
+  // console.log("will this run?");
+  mySocket.emit("room", $scope.room, 'ready');
+
+  //Need to send a ready emit first ->then fight
 
 
   //opponent left Redirect to waiting
@@ -45,10 +59,14 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   mySocket.on('new note', function(note) {
     $scope.currentNote = note;
     console.log("received note", note);
+    MusicalCanvas.addNote(canvas,note);
+    voice.listen(note);
   });
 
   //Receive a hit
   mySocket.on('pitchSlap', function hit() {
+    console.log(mySocket.name + "received hit");
+    voice.pause;
     $scope.user.hp = Math.max($scope.user.hp - 25, 0); //To be customized
     $scope.currentNote = '';
     $scope.round++;
@@ -56,6 +74,8 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
 
   //Emit a hit to opponents
   $scope.correct = function() {
+        console.log(mySocket.name + "received hit");
+    voice.pause;
     $scope.currentNote = '';
     $scope.opponent.hp = Math.max($scope.opponent.hp - 25, 0); //To be customized
     $scope.round++;

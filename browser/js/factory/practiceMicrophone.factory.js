@@ -1,4 +1,4 @@
-app.factory('MicrophoneSample', function($log, CorrelationWork) {
+app.factory('practiceMicrophone', function($log, CorrelationWork) {
     var audioContext;
     var gainNode;
     var scriptProcessor;
@@ -8,26 +8,23 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
 
     function MicrophoneSample(context) {
         audioContext = context;
-        console.log(audioContext);
         this.WIDTH = 640;
         this.HEIGHT = 480;
-        this.getMicrophoneInput;
-        this.canvas;
-        // $('#voice')[0];
+        this.getMicrophoneInput();
+        this.canvas = $('#voice')[0];
         this.isListening = false;
         this.startTime;
         this.stopTime;
-        this.stream;
         //<---- Solution 1---->
         // this.sungNote =$('#note');
         // this.sungCents = $('#cents');
     };
 
-    MicrophoneSample.prototype.getMicrophoneInput = function(callback) {
+    MicrophoneSample.prototype.getMicrophoneInput = function() {
         navigator.getUserMedia({
                 audio: true
             },
-            callback.bind(this),
+            this.onStream.bind(this),
             this.onStreamError.bind(this));
     };
 
@@ -52,8 +49,8 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
 
 
 
-    MicrophoneSample.prototype.onStream = function() {
-        var input = audioContext.createMediaStreamSource(this.stream); //<- convert it to a stream source
+    MicrophoneSample.prototype.onStream = function(stream) {
+        var input = audioContext.createMediaStreamSource(stream); //<- convert it to a stream source
         var filter = audioContext.createBiquadFilter();
         // filter.frequency.value = 60.0;
         // filter.type = filter.NOTCH;
@@ -186,6 +183,8 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
             }
         }
     };
+
+
     MicrophoneSample.prototype.onStreamError = function(e) {
         console.error('Error getting microphone', e);
     };
@@ -208,6 +207,5 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
         }
         window.requestAnimationFrame(this.visualize.bind(this));
     };
-
     return MicrophoneSample;
 });

@@ -1,12 +1,15 @@
-app.controller('PitchCtrl', function($rootScope, $scope, $http, MicrophoneSample,MusicalCanvas) {
+app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicrophone,MusicalCanvas) {
   // var MAX_SIZE = Math.max(4, Math.floor($rootScope.audioContext.sampleRate / 5000));
 
   //creates voice audio and display
 
   var audioContext = new window.AudioContext;
-  var buflen = 1024;
-  var buf = new Float32Array(buflen);
-  var sharp = $scope.sharp = false;
+
+  var sharp = $scope.sharp = false; //Beginner // Difficult -> Move to factory
+
+  //Create
+  var canvas = $("#musical-note")[0];
+  MusicalCanvas.init(canvas);
 
 // <----- Need to move to factory ----->
 //Note Generator
@@ -26,7 +29,7 @@ var synth = new Tone.SimpleSynth().toMaster();
 
 //Happens to fast
 setTimeout(function(){
-var voice = new MicrophoneSample(audioContext);
+var voice = new practiceMicrophone(audioContext);
 
 $scope.giveNote = function() {
     randNote = noteRange[Math.floor(Math.random()*(noteRange.length))];
@@ -68,9 +71,7 @@ $scope.giveNote = function() {
 
   $scope.pause = voice.pause;
 
-//Create
-  var canvas = $("#musical-note")[0];
-  MusicalCanvas.init(canvas);
+
 
 // <----- End of factory ----->
 
