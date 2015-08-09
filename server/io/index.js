@@ -81,8 +81,13 @@ module.exports = function(server) {
       client.broadcast.to(roomId).emit(msg);
     });
 
+    // Opponent disconnected
+    client.on('return to Waiting',function(){
+      client.leave(client.room);
+    });
+
     //Receive Name info and ready status from player
-    client.on('message', function(from, msg) {
+    client.on('ready', function(from, msg) {
       client.name = from;
       waiting[client.id] = client;
       // console.log('received message from', from, JSON.stringify(msg));

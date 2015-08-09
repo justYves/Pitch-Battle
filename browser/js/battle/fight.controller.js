@@ -1,6 +1,7 @@
 app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $state, MicrophoneSample, MusicalCanvas, mySocket) {
   $scope.opponent = opponent;
   $scope.user = user.getAll();
+  $scope.seconds = 5;
   var isOver =false;
 
   //Emit a hit to opponents
@@ -12,6 +13,21 @@ app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $st
   mySocket.on('fight', function(room) {
     $scope.room = room;
     console.log("I'm fighting in room: ", room);
+  });
+
+  //opponent left Redirect to waiting
+  mySocket.on('leave',function(){
+    mySocket.emit('return to Waiting');
+    $scope.messageLog = $scope.opponent.name + " disconnected... Redirecting to the Waiting Room. (" + $scope.seconds + 's)';
+        setInterval(function(){
+      $scope.seconds = $scope.seconds--;
+      $scope.$digest();
+    },1000);
+    setTimeout(function(){
+      mySocket.emit('ready',$scope.user.name);
+      $state.go('battle.waiting'); //returning to waiting room
+    },5000);
+
   });
 
 

@@ -5,7 +5,7 @@ app.controller('BattleCtrl', function($log, $scope,$state, user,mySocket,opponen
 
     //Make the user ready to battle
     mySocket.on('connect',function(){
-      mySocket.emit('message',$scope.nickName,$scope.messageLog);
+      mySocket.emit('ready',$scope.nickName,$scope.messageLog);
     });
 
     //register the player ID
