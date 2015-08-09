@@ -3,7 +3,7 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, MicrophoneSample
 
   //creates voice audio and display
 
-
+  var audioContext = new window.AudioContext;
   var buflen = 1024;
   var buf = new Float32Array(buflen);
   var sharp = $scope.sharp = false;
@@ -26,7 +26,7 @@ var synth = new Tone.SimpleSynth().toMaster();
 
 //Happens to fast
 setTimeout(function(){
-var voice = new MicrophoneSample($rootScope.audioContext);
+var voice = new MicrophoneSample(audioContext);
 
 $scope.giveNote = function() {
     randNote = noteRange[Math.floor(Math.random()*(noteRange.length))];

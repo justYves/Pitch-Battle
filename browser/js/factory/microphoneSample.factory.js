@@ -167,6 +167,10 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
                 var dominantFrequency = testFrequencies[maximum_index];
                 // console.log(average, dominantFrequency.name, frequency);
                 // document.getElementById("frequency").textContent = dominantFrequency.frequency;
+                if(!document.getElementById("note-name")){
+                    this.pause();
+                    return;
+                }
                 document.getElementById("note-name").textContent = dominantFrequency.name;
                 analyzedTones.push(dominantFrequency.name.slice(0,2).trim());
                 if(analyzedTones.length>7){
