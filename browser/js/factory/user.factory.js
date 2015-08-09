@@ -18,21 +18,26 @@ app.factory('user', function() {
   };
 
   var addHP = function(num){
-    return Math.max(user.hp+=num,100);
+    return Math.min(user.hp+=num,100);
   };
 
   var substractHP = function(num){
-    return Math.min(user.hp-=num,0);
+    return Math.max(user.hp-=num,0);
   };
 
   var getAll = function(){
     return user;
-  }
+  };
+
+  var restart = function(){
+    user.hp = 100;
+  };
 
   return {
     getName: getName,
     setName: setName,
     getHP: getHP,
-    getAll : getAll
+    getAll : getAll,
+    restart: restart
   };
 });
