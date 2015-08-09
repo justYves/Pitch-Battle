@@ -18,5 +18,8 @@ app.config(function ($stateProvider) {
         templateUrl: "js/battle/fight.html",
         controller: "FightCtrl"
     })
+    .state('battle.end',{
+        templateUrl:"js/battle/end.html"
+    })
     ;
 });

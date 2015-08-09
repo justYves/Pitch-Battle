@@ -11,6 +11,7 @@ module.exports = function(server) {
   var waiting = {}; //player waiting to play
   var clients = {}; //all connected clients
   var rooms = {}; // Object are easier to delete obj[key]
+  var interval = 2000; //ms for note to appear
 
 
 // console.log("!!!!!",randNote);
@@ -60,9 +61,8 @@ module.exports = function(server) {
 
         setTimeout(function() {
           io.to(newRoom.id).emit('fight', newRoom.id);
-          var note = randNote();
-          io.to(newRoom.id).emit('new note',note)
-        }, 5000);
+          io.to(newRoom.id).emit('new note',randNote())
+        }, interval);
       }
     }
 
@@ -83,9 +83,11 @@ module.exports = function(server) {
     //Emit to a specific room:
     client.on('room', function(roomId, msg) {
       client.broadcast.to(roomId).emit(msg);
-      setTimeout(function() {
-          io.to(roomId).emit('new note',randNote())
-      }, 5000);
+      if(msg==='pitchSlap'){
+        setTimeout(function() {
+            io.to(roomId).emit('new note',randNote());
+        }, interval);
+      }
     });
 
     // Opponent disconnected
