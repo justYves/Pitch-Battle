@@ -1,16 +1,19 @@
 <div class="row">
     <div class="col-xs-12 text-center">
-    <h1 class="bigheadline">Pitch Battle <!-- Battle of the Pitches --> </h1>
+        <h1 class="bigheadline item-space">Pitch Battle <!-- Battle of the Pitches --> </h1>
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <button style="display:block; width: 100%;" class="btn btn-primary" ui-sref="pitch"> <h2 class="subheadline">Training Mode </h2></button>
+        <button ng-mouseenter="hover1 = true; hovered1 = true" ng-mouseleave="hover1 = false"  class="big button text-left item-space" ui-sref="pitch">
+            <h3 class="subheadline"> Training Mode <small ng-show="hovered1" class="text-nowrap"><i ng-class="{'animated rotateIn': hover1, 'animated fadeOut' : !hover1}"class="fa fa-chevron-right"></i></small></h3> </button>
     </div>
     <div class="col-xs-12">
-        <button style="display:block; width: 100%;" class="btn btn-danger" ui-sref="battle.waiting"> <h2 class="subheadline"> Let's battle, Pitches!</h2></button>
+        <button ng-mouseenter="hover2 = true; hovered2 = true" ng-mouseleave="hover2 = false" class="big button text-left item-space" ui-sref="battle.waiting">
+            <h3 class="subheadline">Battle Mode <small ng-show="hovered2" class="text-nowrap"><i ng-class="{'animated rotateIn': hover2, 'animated fadeOut' : !hover2}" class="fa fa-chevron-right" ></i></small></h3></button>
     </div>
 </div>
-
+<!--
 <div>What's your name? <form><input ng-model="userName"></form> <button ng-click="register(userName)">Submit</button> </div>
 <pre>nickName: {{nickName}}</pre>
+ -->
