@@ -1,9 +1,8 @@
 app.controller('PitchCtrl', function($rootScope, $scope, $http, MicrophoneSample,MusicalCanvas) {
-  var audioContext = new window.AudioContext;
-  var MAX_SIZE = Math.max(4, Math.floor(audioContext.sampleRate / 5000));
+  // var MAX_SIZE = Math.max(4, Math.floor($rootScope.audioContext.sampleRate / 5000));
 
   //creates voice audio and display
-  var voice = new MicrophoneSample(audioContext);
+
 
   var buflen = 1024;
   var buf = new Float32Array(buflen);
@@ -24,6 +23,10 @@ keys.forEach(function(key){
 
 var randNote;
 var synth = new Tone.SimpleSynth().toMaster();
+
+//Happens to fast
+setTimeout(function(){
+var voice = new MicrophoneSample($rootScope.audioContext);
 
 $scope.giveNote = function() {
     randNote = noteRange[Math.floor(Math.random()*(noteRange.length))];
@@ -70,5 +73,7 @@ $scope.giveNote = function() {
   MusicalCanvas.init(canvas);
 
 // <----- End of factory ----->
+
+},500)
 
 });

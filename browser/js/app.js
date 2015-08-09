@@ -13,11 +13,15 @@ app.config(function ($urlRouterProvider, $locationProvider) {
                           navigator.webkitGetUserMedia ||
                           navigator.mozGetUserMedia ||
                           navigator.msGetUserMedia);
+
+
+
 });
 
 // This app.run is for controlling access to specific states.
 app.run(function ($rootScope, AuthService, $state) {
 
+    $rootScope.audioContext = new window.AudioContext;
     // The given state requires an authenticated user.
     var destinationStateRequiresAuth = function (state) {
         return state.data && state.data.authenticate;
