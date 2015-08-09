@@ -2,6 +2,7 @@
 var socketio = require('socket.io');
 var chalk = require('chalk');
 var uuid = require('node-uuid');
+var randNote = require('./giveNote.js');
 var io = null;
 module.exports = function(server) {
 
@@ -12,7 +13,7 @@ module.exports = function(server) {
   var rooms = {}; // Object are easier to delete obj[key]
 
 
-
+// console.log("!!!!!",randNote);
   //io Logic Here
   var connectedUser = 0;
   io.on('connection', function(client) {
@@ -59,12 +60,16 @@ module.exports = function(server) {
 
         setTimeout(function() {
           io.to(newRoom.id).emit('fight', newRoom.id);
-        }, 1000);
+          var note = randNote();
+          io.to(newRoom.id).emit('new note',note)
+        }, 5000);
       }
     }
 
     function Room(user1, user2) {
       this.id = uuid.v4().toString();
+      this.round = 1;
+      this.currentNote='';
       this.players = [{
         name:user1.name,
         id:user1.id
@@ -75,10 +80,12 @@ module.exports = function(server) {
     }
 
 
-
     //Emit to a specific room:
     client.on('room', function(roomId, msg) {
       client.broadcast.to(roomId).emit(msg);
+      setTimeout(function() {
+          io.to(roomId).emit('new note',randNote())
+      }, 5000);
     });
 
     // Opponent disconnected

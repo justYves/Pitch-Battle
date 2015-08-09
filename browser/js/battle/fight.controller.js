@@ -3,16 +3,9 @@ app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $st
   $scope.user = user.getAll();
   var isOver =false;
 
-  //Emit a hit to opponents
-  $scope.correct = function(){
-    mySocket.emit("room",$scope.room,'hit');
-    $scope.opponent.hp-= 25; //To be customized
-  };
 
-  mySocket.on('fight', function(room) {
-    $scope.room = room;
-    console.log("I'm fighting in room: ", room);
-  });
+
+
 
   //opponent left Redirect to waiting
   mySocket.on('leave',function(){
@@ -33,14 +26,31 @@ app.controller('FightCtrl', function($log, $location,opponent, user, $scope, $st
   });
 
 
+//Game Mechanics
+
+  mySocket.on('fight', function(room) {
+    $scope.room = room;
+    console.log("I'm fighting in room: ", room);
+  });
+
+  mySocket.on('new note',function(note){
+    $scope.currentNote = note;
+    console.log("received note", note);
+  });
 
   //Receive a hit
   mySocket.on('hit',function(){
-    $scope.user.hp -= 25; //To be customized
+    Math.min($scope.user.hp-25,0); //To be customized
     // $scope.$digest;
   });
 
-  //If user is leaving the room;
+    //Emit a hit to opponents
+  $scope.correct = function(){
+    mySocket.emit("room",$scope.room,'hit');
+    $scope.opponent.hp= Math.min($scope.opponent.hp-25,0); //To be customized
+  };
+
+  //If user is leaving the room; Note working. need to add on root State change from to
   $scope.$on('$locationChangeStart', function (scope, next, current) {
     if(!isOver && next.indexOf('waiting')!==-1){
       alert("are you sure you want to leave?");
