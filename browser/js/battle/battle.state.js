@@ -10,11 +10,11 @@ app.config(function ($stateProvider) {
         }
     })
     .state('battle.waiting',{
-        url:'/waiting',
+        // url:'/waiting',
         templateUrl: "js/battle/waiting-screen.html"
     })
     .state('battle.fight',{
-        url:'/fight',
+        // url:'/fight',
         templateUrl: "js/battle/fight.html",
         controller: "FightCtrl"
     })

@@ -1,12 +1,13 @@
 <h1> Fight! <h1>
 
 <div class="row">
-<h2>{{messageLog}}</h2>
+<h2>{{messageLog}} <span ng-show="!!seconds">({{seconds}} s.)</span></h2>
   <div class="col-sm-6">
 
     <div class="row">{{user.name}}</div>
     <div class="row">hp: {{user.hp}}</div>
     <button ng-click="correct()">correct note!</button>
+    <button ng-click="getLocation()">correct note!</button>
   </div>
   <div class="col-sm-6">
     {{opponent.name}} hp: {{opponent.hp}}
