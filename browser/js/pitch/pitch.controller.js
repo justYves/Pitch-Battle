@@ -23,7 +23,9 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
 
   //Happens too fast
   setTimeout(function() {
+
       var voice = new practiceMicrophone(audioContext);
+
       $scope.giveNote = function() {
       voice.clearWidget();
       MusicalCanvas.init(canvas);
@@ -43,22 +45,35 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
 
     $scope.repeatNote = function() {
       if (!randNote) return;
+      voice.silence(1000);
       $scope.play(randNote);
     };
 
     $scope.playNext = function() {
+      voice.pause();
+      voice.clearWidget();
       var pos = noteRange.indexOf(randNote);
       if (pos !== -1) {
         randNote = (noteRange[pos + 1] || noteRange[0]);
-        $scope.play(randNote);
         MusicalCanvas.addNote(canvas, randNote);
+        $scope.play(randNote);
+        setTimeout(function() {
+          voice.listen(randNote);
+          $scope.reset=false;
+        }, 1000);
       }
     }; $scope.playPrev = function() {
+      voice.pause();
+      voice.clearWidget();
       var pos = noteRange.indexOf(randNote);
       if (pos !== -1) {
         randNote = (noteRange[pos - 1] || noteRange[noteRange.length - 1]);
-        $scope.play(randNote);
         MusicalCanvas.addNote(canvas, randNote);
+                $scope.play(randNote);
+        setTimeout(function() {
+          voice.listen(randNote);
+          $scope.reset=false;
+        }, 1000);
       }
     };
 
@@ -68,7 +83,9 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
       synth.triggerAttackRelease(note, "8n");
     };
 
-    $scope.pause = voice.pause;
+    $scope.pause = function(){
+      voice.pause();
+    };
   }, 500);
 // <----- End of factory ----->
 

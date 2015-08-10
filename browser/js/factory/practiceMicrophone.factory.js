@@ -47,6 +47,13 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
         this.analysePitch();
     };
 
+    MicrophoneSample.prototype.silence = function(time){
+        gainNode.gain.value = 0;
+        setTimeout(function(){
+            gainNode.gain.value=1;
+        },time);
+    };
+
     MicrophoneSample.prototype.pause = function() {
         this.isListening = false;
         console.log("tomatch", noteToMatch);
@@ -228,7 +235,7 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
             var height = this.HEIGHT * percent;
             var offset = this.HEIGHT - height - 1;
             var barWidth = this.WIDTH / times.length;
-            drawContext.fillStyle = 'black';
+            drawContext.fillStyle = '#2c3e50';
             drawContext.fillRect(i * barWidth, offset, 1, 1);
         }
         window.requestAnimationFrame(this.visualize.bind(this));
