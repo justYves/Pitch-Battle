@@ -1,18 +1,42 @@
-<div id="detector" class="vague">
-<h1> Your current pitch: <span id="note-name"></span></h1>
-</div>
-<div class="row">
-    <div class="col-lg-7">
-        <canvas id="voice" width=300 height=42></canvas>
-    </div>
-    <div class="col-lg-5">
-      <h1>{{randNote|| '?'}} <small>({{randNoteFreq}} Hz)</small></h1>
-      <canvas id="musical-note" width=100 height=100></canvas>
 
+<div class="row text-center" style="  background-color:white">
+<h1>Note to match:</h1>
+<canvas id="musical-note" width=100 height=100></canvas> <h1 style="display: inline-block">{{randNote|| '?'}} <small>({{randNoteFreq}} Hz)</small></h1>
+</div>
+
+
+<!-- Not NEEDED ANYMORE -->
+<!-- <div id="detector" class="vague">
+<h1> Your current pitch: <span id="note-name"></span></h1>
+</div> -->
+
+<div class="row">
+  <canvas id="widget" width=300 height=300></canvas>
+</div>
+
+
+
+
+<div class="row">
+
+        <canvas id="voice" width=300 height=42></canvas>
+</div>
+
+<div class="row text-center">
+<a id="nav" class="btn btn-primary item-space" ng-click="playPrev()"><h1><i class="fa fa-backward"></i></h1></a>
+<a id="nav" class="btn btn-primary item-space" ng-click="pause()"><h1 ><i class="fa fa-pause"></i></h1></a>
+<a id="nav" class="btn btn-primary item-space" ng-click="giveNote()"><h1 ><i class="fa fa-play"></i></h1></a>
+<a id="nav" class="btn btn-primary item-space" ng-click="repeatNote()"><h1 ><i class="fa fa-refresh"></i></h1></a>
+<a id="nav" class="btn btn-primary item-space" ui-sref="home"><h1 ><i class="fa fa-home"></i></h1></a>
+<a id="nav" class="btn btn-primary item-space" ng-click="playNext()"><h1 ><i class="fa fa-forward"></i></h1></a>
+</div>
+
+<!-- <div class="row">
        <div> <button type="button" class="btn btn-primary" ng-click="giveNote()">Give Note!</button> </div>
       <div>  <button type="button" class="btn btn-danger" ng-click="pause()">Pause</button> </div>
        <div>  <button type="button" class="btn btn-warning" ng-click="repeatNote()">Repeat Note!</button> </div>
        <div>  <button type="button" class="btn btn-danger" ng-click="playPrev()">Previous Note!</button> </div>
        <div>  <button type="button" class="btn btn-success" ng-click="playNext()">Next Note!</button> </div>
     </div>
-</div>
+</div> -->
+

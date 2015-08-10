@@ -1,4 +1,4 @@
-@import url(//fonts.googleapis.com/css?family=Dosis|Lato:300,400,700,900,300italic,400italic,700italic,900italic|Raleway:400,200,300,500,100|Titillium+Web:400,200,300italic,300,200italic);
+@import url(https://fonts.googleapis.com/css?family=Dosis|Lato:300,400,700,900,300italic,400italic,700italic,900italic|Raleway:400,200,300,500,100|Titillium+Web:400,200,300italic,300,200italic);
 
 * {
   box-sizing: border-box;
@@ -23,4 +23,22 @@ body {
 
 @import './animate.scss';
 @import './custom.scss';
+
+
+#nav{
+  > h1{
+    font-size: 6em;
+  }
+}
+@media screen and (max-width: 768px) {
+    #nav{
+      > h1 {
+        font-size:3em;
+      }
+    }
+}
+
+#logo {
+  margin: 0  auto 30px auto;
+}
 

@@ -1,12 +1,13 @@
 <div class="row">
     <div class="col-xs-12 text-center">
-        <h1 class="bigheadline item-space">Pitch Battle <!-- Battle of the Pitches --> </h1>
+    <img id="logo" class="img-responsive" ng-src="assets/Pitch-Battle-Logo.png" />
+<!--         <h1 class="bigheadline item-space">Pitch Battle </h1> -->
     </div>
 </div>
 <div class="row">
     <div class="col-xs-12">
         <button ng-mouseenter="hover1 = true; hovered1 = true" ng-mouseleave="hover1 = false"  class="big button text-left item-space" ui-sref="pitch">
-            <h3 class="subheadline"> Training Mode <small ng-show="hovered1" class="text-nowrap"><i ng-class="{'animated rotateIn': hover1, 'animated fadeOut' : !hover1}"class="fa fa-chevron-right"></i></small></h3> </button>
+            <h3 class="subheadline"> Practice <small ng-show="hovered1" class="text-nowrap"><i ng-class="{'animated rotateIn': hover1, 'animated fadeOut' : !hover1}"class="fa fa-chevron-right"></i></small></h3> </button>
     </div>
     <div class="col-xs-12">
         <button ng-mouseenter="hover2 = true; hovered2 = true" ng-mouseleave="hover2 = false" class="big button text-left item-space" ui-sref="battle.waiting">
