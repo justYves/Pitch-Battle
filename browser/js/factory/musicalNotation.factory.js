@@ -20,12 +20,11 @@ app.factory('MusicalCanvas', function($rootScope) {
   }
 
   function init(canvas) {
-
     var renderer = new Vex.Flow.Renderer(canvas,
       Vex.Flow.Renderer.Backends.CANVAS);
     ctx = renderer.getContext();
-    stave = new Vex.Flow.Stave(10, 0, 500);
-    stave.addClef("treble").setContext(ctx).draw();
+    stave = new Vex.Flow.Stave(10, 0, 100);
+    stave.addClef("treble").setContext(ctx).draw(); //check treble or bass
 
   }
 
@@ -37,7 +36,6 @@ app.factory('MusicalCanvas', function($rootScope) {
       var notes = [
         new note(randNote)
       ];
-
       // Create a voice in 4/4
       var voice = new Vex.Flow.Voice({
         num_beats: 1,
@@ -50,7 +48,7 @@ app.factory('MusicalCanvas', function($rootScope) {
 
       // Format and justify the notes to 500 pixels
       var formatter = new Vex.Flow.Formatter().
-      joinVoices([voice]).format([voice], 500);
+      joinVoices([voice]).format([voice], 100);
 
       // Render voice
       voice.draw(ctx, stave);

@@ -1,7 +1,7 @@
 app.factory('Widget', function() {
 
   //View a particular widget
-  var CircleWidget = function(canvas, bgColor, deltaColor, okColor, fontColor) {
+  var CircleWidget = function(canvas, bgColor, deltaColor, okColor, fontColor, doneColor) {
     //canvas use to draw
     this.canvas = canvas;
     //backgroud color
@@ -12,6 +12,8 @@ app.factory('Widget', function() {
     this.okColor = okColor;
     //text color
     this.fontColor = fontColor;
+    //color when it's done
+    this.doneColor = doneColor;
 
     //context use to draw
     this.ctx = this.canvas.getContext("2d");
@@ -37,7 +39,12 @@ app.factory('Widget', function() {
         //in arc USES DELTA
         this.ctx.beginPath();
         this.ctx.arc(this.canvas.width / 2, this.canvas.height / 2, (4 * this.canvas.width) / 10, 0, 2*Math.PI);
-        this.ctx.fillStyle = percentage > 0 ?this.okColor : this.bgColor;
+        if(percentage===1){
+            this.ctx.fillStyle = this.doneColor;
+        } else{
+            this.ctx.fillStyle = percentage > 0 ?this.okColor : this.bgColor;
+        }
+        console.log(percentage);
         this.ctx.fill();
         this.ctx.closePath();
 
@@ -53,11 +60,11 @@ app.factory('Widget', function() {
         this.ctx.fillStyle = this.fontColor;
         this.ctx.fillText(info1, this.canvas.width / 2, this.canvas.height / 2 + Math.round(this.canvas.width/300*55) );
 
-        //Show frequency
-        this.ctx.font = Math.round(this.canvas.width/300*15) + 'pt Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillStyle = this.fontColor;
-        this.ctx.fillText(info2, this.canvas.width / 2, this.canvas.height / 2 + Math.round(this.canvas.width/300*85) );
+        //Show frequency -> Buggy
+        // this.ctx.font = Math.round(this.canvas.width/300*15) + 'pt Arial';
+        // this.ctx.textAlign = 'center';
+        // this.ctx.fillStyle = this.fontColor;
+        // this.ctx.fillText(info2, this.canvas.width / 2, this.canvas.height / 2 + Math.round(this.canvas.width/300*85) );
 
       }
   };

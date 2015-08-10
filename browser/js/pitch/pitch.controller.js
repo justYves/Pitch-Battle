@@ -4,8 +4,6 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
   var audioContext = new window.AudioContext;
   var sharp = $scope.sharp = false; //Beginner // Difficult -> Move to factory
   var canvas = $("#musical-note")[0];
-  MusicalCanvas.init(canvas);
-
 
 
   // <----- Need to move to factory ----->
@@ -26,16 +24,20 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
   //Happens too fast
   setTimeout(function() {
       var voice = new practiceMicrophone(audioContext);
-
       $scope.giveNote = function() {
+      voice.clearWidget();
+      MusicalCanvas.init(canvas);
         randNote = noteRange[Math.floor(Math.random() * (noteRange.length))];
         // console.log(randNote);
+
         MusicalCanvas.addNote(canvas, randNote);
         //create one of Tone's built-in synthesizers and connect it to the master output
         //play a middle c for the duration of an 8th note
+
         $scope.play(randNote);
         setTimeout(function() {
           voice.listen(randNote);
+          $scope.reset=false;
         }, 1000);
     };
 

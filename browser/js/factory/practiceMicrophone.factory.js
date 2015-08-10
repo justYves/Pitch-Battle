@@ -17,7 +17,8 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
         this.startTime;
         this.stopTime;
         this.widgetCanvas = $("#widget")[0];
-        this.widget = new Widget(this.widgetCanvas, '#ffffff', '#2c3e50', '#18bc9c', '#2c3e50');
+        this.widget = new Widget(this.widgetCanvas, '#ffffff', '#2c3e50', '#F7D708', '#2c3e50','#18bc9c');
+        this.widget.show("","","","");
         //<---- Solution 1---->
         // this.sungNote =$('#note');
         // this.sungCents = $('#cents');
@@ -25,19 +26,24 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
 
     MicrophoneSample.prototype.getMicrophoneInput = function() {
         navigator.getUserMedia({
-                audio: true
+                audio: true,
+                // video: true // Not needed for training
             },
             this.onStream.bind(this),
             this.onStreamError.bind(this));
     };
 
+    MicrophoneSample.prototype.clearWidget = function(){
+        this.widget.show("","","","");
+    }
+
     MicrophoneSample.prototype.listen = function(note) {
         analyzedTones = [];
         progressBar=0;
         noteToMatch = note.slice(0, -1);
-        this.startTime = audioContext.currentTime;
         gainNode.gain.value = 1;
         this.isListening = true;
+        this.startTime = audioContext.currentTime;
         this.analysePitch();
     };
 
@@ -186,13 +192,12 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
                 var difficulty = 7;
                 if(sungNote === noteToMatch){
                     progressBar++;
-                    if(progressBar===difficulty) this.pause();
                 } else {
                     progressBar = 0;
                 }
-
-                //update the widget
                 this.widget.show(sungNote, info, frequency,progressBar/difficulty);
+                    if(progressBar===difficulty) this.pause();
+                //update the widget
                 console.log(progressBar/difficulty);
                 //check for sungNote
                 // if (analyzedTones.length > difficulty) {
