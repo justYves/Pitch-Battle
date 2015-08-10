@@ -1,0 +1,25 @@
+
+ <div class="container">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <img id="logo" class="img-responsive" ng-src="assets/Pitch-Battle-Logo.png" />
+            <!--         <h1 class="bigheadline item-space">Pitch Battle </h1> -->
+        </div>
+    </div>
+    <div class="row text-center">
+
+    <h1 class="subheadline item-space">{{nickName}}, Let's take your pic! </h1>
+        <video class="item-space"id="video" width="320" height="240" autoplay ng-show="clicked"></video>
+        <canvas class="item-space" ng-show="tookPic" id="canvas" width="240" height="240"></canvas>
+
+
+    </div>
+</div>
+
+<div class="row text-center">
+    <a id="nav" class="btn btn-primary item-space" ui-sref="login.name"><h1><i class="fa fa-backward"></i></h1></a>
+    <a id="nav" class="btn btn-primary item-space" ui-sref="home"><h1 ><i class="fa fa-home"></i></h1></a>
+    <a id="nav" class="btn btn-primary item-space" ng-show="tookPic" ui-sref="battle.waiting" ng-click="convertPic()"><h1 ><i class="fa fa-forward"></i></h1></a>
+        <a id="nav" class="btn btn-primary item-space" ng-hide="clicked" ng-click="clicked=true;clicked2=true; takePic()"><h1><i class="fa fa-camera"></i></h1></a>
+        <a id="nav" class="btn btn-primary item-space" ng-show="clicked2" ng-click="tookPic=true; clicked=false; snap()"><h1><i class="fa fa-camera"></i></h1></a>
+</div>

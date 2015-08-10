@@ -1,10 +1,11 @@
-app.factory('MicrophoneSample', function($log, CorrelationWork) {
+app.factory('MicrophoneSample', function($log, CorrelationWork, Widget,mySocket,$rootScope) {
     var audioContext;
     var gainNode;
     var scriptProcessor;
     var correlationWorker;
     var analyzedTones = [];
     var noteToMatch;
+    var progressBar = 0;
 
     function MicrophoneSample(context) {
         audioContext = context;
@@ -18,9 +19,17 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
         this.startTime;
         this.stopTime;
         this.stream;
+
         //<---- Solution 1---->
         // this.sungNote =$('#note');
         // this.sungCents = $('#cents');
+    };
+
+    MicrophoneSample.prototype.createWidget = function(){
+        console.log("widgetCreated");
+        this.widgetCanvas = $("#widget")[0];
+        this.widget = new Widget(this.widgetCanvas, '#ffffff', '#2c3e50', '#F7D708', '#2c3e50', '#18bc9c');
+        this.widget.show("", "", "", "");
     };
 
     MicrophoneSample.prototype.getMicrophoneInput = function(callback) {
@@ -32,8 +41,9 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
     };
 
     MicrophoneSample.prototype.listen = function(note) {
-        analyzedTones=[];
-        noteToMatch = note.slice(0,-1);
+        analyzedTones = [];
+        progressBar = 0;
+        noteToMatch = note.slice(0, -1);
         this.startTime = audioContext.currentTime;
         gainNode.gain.value = 1;
         this.isListening = true;
@@ -41,13 +51,14 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
     };
 
     MicrophoneSample.prototype.pause = function() {
+        this.widget.show("", "", "", "");
         this.isListening = false;
-        console.log("tomatch",noteToMatch);
-        console.log("analyzed Tones",analyzedTones);
-        console.log("time:",audioContext.currentTime-this.startTime + ' seconds.');
+        console.log("tomatch", noteToMatch);
+        console.log("analyzed Tones", analyzedTones);
+        console.log("time:", audioContext.currentTime - this.startTime + ' seconds.');
         gainNode.gain.value = 0;
         correlationWorker.terminate();
-        scriptProcessor.onaudioprocess={};
+        scriptProcessor.onaudioprocess = {};
     };
 
 
@@ -85,28 +96,28 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
 
 
     /// <---- Solution 2--->
-        var C2 = 65.41; // C2 note, in Hz.
-        var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-        var testFrequencies = [];
-        var octave = 2;
-        for (var i = 0; i < 30; i++) {
-            if (!i % 12) octave++;
-            var noteFrequency = C2 * Math.pow(2, i / 12);
-            var noteName = notes[i % 12];
-            var note = {
-                "frequency": noteFrequency,
-                "name": noteName
-            };
-            var just_above = {
-                "frequency": noteFrequency * Math.pow(2, 1 / 48),
-                "name": noteName  +" (a bit sharp)"
-            };
-            var just_below = {
-                "frequency": noteFrequency * Math.pow(2, -1 / 48),
-                "name": noteName +" (a bit flat)"
-            };
-            testFrequencies = testFrequencies.concat([just_below, note, just_above]);
-        }
+    var C2 = 65.41; // C2 note, in Hz.
+    var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    var testFrequencies = [];
+    var octave = 2;
+    for (var i = 0; i < 30; i++) {
+        if (!i % 12) octave++;
+        var noteFrequency = C2 * Math.pow(2, i / 12);
+        var noteName = notes[i % 12];
+        var note = {
+            "frequency": noteFrequency,
+            "name": noteName
+        };
+        var just_above = {
+            "frequency": noteFrequency * Math.pow(2, 1 / 48),
+            "name": noteName + " (a bit sharp)"
+        };
+        var just_below = {
+            "frequency": noteFrequency * Math.pow(2, -1 / 48),
+            "name": noteName + " (a bit flat)"
+        };
+        testFrequencies = testFrequencies.concat([just_below, note, just_above]);
+    }
     MicrophoneSample.prototype.analysePitch = function() {
         correlationWorker = new Worker(CorrelationWork); //Will run on the user CPUs
 
@@ -123,7 +134,7 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
         //listen to event;
         // var i =0;
         scriptProcessor.onaudioprocess = function(event) {
-        // console.log("called",i++)
+            // console.log("called",i++)
             if (!recording) return;
             buffer = buffer.concat(Array.prototype.slice.call(event.inputBuffer.getChannelData(0)));
             if (buffer.length > sampleLengthMilliseconds * audioContext.sampleRate / 1000) {
@@ -170,18 +181,34 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
                 var dominantFrequency = testFrequencies[maximum_index];
                 // console.log(average, dominantFrequency.name, frequency);
                 // document.getElementById("frequency").textContent = dominantFrequency.frequency;
-                if(!document.getElementById("note-name")){
+            if (!document.getElementById("widget")) {
                     this.pause();
                     return;
                 }
-                document.getElementById("note-name").textContent = dominantFrequency.name;
-                analyzedTones.push(dominantFrequency.name.slice(0,2).trim());
-                if(analyzedTones.length>7){
-                    for(var i=1; i<=4; i++){ //Here for difficulty
-                        if(noteToMatch!= analyzedTones[analyzedTones.length-i]) return false;
-                    }
+                //Not needed anymore
+                // document.getElementById("note-name").textContent = dominantFrequency.name;
+                var sungNote = dominantFrequency.name.slice(0, 2).trim();
+                var info = dominantFrequency.name.slice(2).trim();
+                var frequency = Math.round(dominantFrequency.frequency, -2) + ' Hz';
+
+
+                analyzedTones.push(sungNote);
+                //First note equal start bar add 1;
+                //if last note equal then ++;
+                var difficulty = 7;
+                if (sungNote === noteToMatch) {
+                    progressBar++;
+                } else {
+                    progressBar = 0;
+                }
+                this.widget.show(sungNote, info, frequency, progressBar / difficulty);
+                if (progressBar === difficulty) {
+                    $rootScope.$broadcast('correct');
                     this.pause();
                 }
+
+                //update the widget
+                console.log(progressBar / difficulty);
 
             }
         }
@@ -203,7 +230,7 @@ app.factory('MicrophoneSample', function($log, CorrelationWork) {
             var height = this.HEIGHT * percent;
             var offset = this.HEIGHT - height - 1;
             var barWidth = this.WIDTH / times.length;
-            drawContext.fillStyle = 'black';
+            drawContext.fillStyle = '#2c3e50';
             drawContext.fillRect(i * barWidth, offset, 1, 1);
         }
         window.requestAnimationFrame(this.visualize.bind(this));

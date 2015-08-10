@@ -1,0 +1,20 @@
+
+ <div class="container">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <img id="logo" class="img-responsive" ng-src="assets/Pitch-Battle-Logo.png" />
+            <!--         <h1 class="bigheadline item-space">Pitch Battle </h1> -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <input id="loginQuestion" class="subheadline item-space" type="text" ng-model="userName" placeholder="{{nickName!=='Anonymous'? nickName : 'What\'s your name?'}}">
+        </div>
+    </div>
+</div>
+
+<div class="row text-center">
+    <a id="nav" class="btn btn-primary item-space" ui-sref="home"><h1><i class="fa fa-backward"></i></h1></a>
+    <a id="nav" class="btn btn-primary item-space" ui-sref="home"><h1 ><i class="fa fa-home"></i></h1></a>
+    <a id="nav" class="btn btn-primary item-space" ui-sref="login.picture" ng-click="register(userName)"><h1 ><i class="fa fa-forward"></i></h1></a>
+</div>

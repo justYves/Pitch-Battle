@@ -1,3 +1,5 @@
 app.factory('mySocket', function (socketFactory) {
-  return socketFactory();
+  var mySocket =socketFactory()
+  mySocket.forward('correct');
+  return mySocket;
 });

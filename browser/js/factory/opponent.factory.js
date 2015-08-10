@@ -5,6 +5,7 @@ app.factory('opponent', function() {
     this.name= '';
     this.id='';
     this.hp= 100;
+    this.img='';
   }
 
   // var create = function(name){

@@ -1,24 +1,25 @@
-<h1> Fight! </h1>
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <h2>{{messageLog}} <span ng-show="!!seconds">({{seconds}} s.)</span></h2>
-        <h3>ROUND:{{round}} NOTE: {{currentNote}}</h3>  <canvas id="musical-note" width=100 height=100></canvas>
-    </div>
-    <div class="col-sm-6">
-        <div class="row">
-            <div class="col-xs-6">
-                <div>{{user.name}}</div>
-                <div>hp: {{user.hp}}</div>
-                      <h1>Your current pitch: <span id="note-name"></span></h1>
-                        <canvas id="voice" width=300 height=42></canvas>
-                <button ng-click="correct()">correct note!</button>
-            </div>
-            <div class="col-xs-6">
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="row">{{opponent.name}} </div>
-        <div class="row">hp: {{opponent.hp}}</div>
-    </div>
+<div class="row" id="fightScreen" style="background-color:white">
+<div class="col-xs-12 text-center"><h3> ROUND:{{round}} NOTE: {{currentNote}}</h3>  <canvas id="musical-note" width=100 height=100></canvas></div>
+
+
+<div class="col-xs-3">
+<canvas id="profilePic"></canvas>
+<img  id="bodyPic" ng-src="../assets/battle/Static%20%281%29.png">
+{{user.name}} {{user.name}} HP
 </div>
+<div class="col-xs-2">
+    <div class="row text-center" id="WidgetAndVoice">
+    <!-- < ng-class="{'animated flipInY':reset}" -->
+    <canvas id="widget" width=300 height=300></canvas>
+    <canvas id="voice" width=100 height=100></canvas>
+</div>
+<div class="col-xs-2"></div>
+</div>
+<div class="col-xs-5">
+<canvas id="opponentPic"></canvas>
+<img id="bodyPic" ng-src="../assets/battle/Static%20%282%29.png">
+{{opponent.name}} {{opponent.hp}} HP
+</div>
+
+</div>
+
