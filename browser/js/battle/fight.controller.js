@@ -68,7 +68,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
-      mySocket.emit('ready', $scope.user.name, sendImage($scope.user.img));
+      mySocket.emit('ready', $scope.user.name);
       $state.go('battle.waiting'); //returning to waiting room
     }, 5000);
 
@@ -113,6 +113,20 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
     }
   });
 
+  $scope.correct=function(){
+   console.log(mySocket.name + "got it right!");
+    voice.pause;
+    $scope.currentNote = '';
+    $scope.opponent.hp = Math.max($scope.opponent.hp - 25, 0); //To be customized
+    $scope.round++;
+    if ($scope.opponent.hp === 0) {
+      mySocket.emit("room", $scope.room, 'end');
+      $state.go('battle.end');
+    } else {
+      mySocket.emit("room", $scope.room, 'pitchSlap');
+    }
+  }
+
   mySocket.on("end", function() {
     mySocket.removeAllListeners();
     mySocket.on('foundOpponents', function(player,img) {
@@ -124,7 +138,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
-    mySocket.emit('ready', $scope.nickName,sendImage($scope.user.img));
+    mySocket.emit('ready', $scope.nickName);
     $state.go('battle.end');
   });
 
@@ -133,7 +147,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
     if (!isOver && next.indexOf('waiting') !== -1) {
       alert("are you sure you want to leave?");
       mySocket.emit('disconnect');
-      mySocket.emit('ready', $scope.user.name,$scope.user.img);
+      mySocket.emit('ready', $scope.user.name);
       // console.log('going home');
     }
   });

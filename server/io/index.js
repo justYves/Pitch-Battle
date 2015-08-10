@@ -48,12 +48,14 @@ module.exports = function(server) {
         //notify user1
         user1.join(newRoom.id);
         user1.room = newRoom.id;
-        user1.emit('foundOpponents', user2.name, user2.img); //change angular state
+        // console.log("sending",user2.img);
+        user1.emit('foundOpponents', user2.name); //change angular state
 
         //notify user2
         user2.join(newRoom.id);
         user2.room = newRoom.id;
-        user2.emit('foundOpponents', user1.name, user1.img); //change angular state
+        // console.log("sending",user1.img);
+        user2.emit('foundOpponents', user1.name); //change angular state
 
         io.sockets.in(newRoom.id).on('leave', function() {
           console.log("someone left the room!");
@@ -72,12 +74,12 @@ module.exports = function(server) {
       this.currentNote = '';
       this.players = [{
         name: user1.name,
-        id: user1.id,
-        img: user1.img
+        id: user1.id
+        // img: user1.img
       }, {
         name: user2.name,
-        id: user2.id,
-        img: user2.img
+        id: user2.id
+        // img: user2.img
       }];
     }
 
@@ -98,11 +100,11 @@ module.exports = function(server) {
     });
 
     //Receive Name info and ready status from player
-    client.on('ready', function(from, msg,img) {
+    client.on('ready', function(from) {
       client.name = from;
-      client.img = img;
+      // client.img = img;
       waiting[client.id] = client;
-      console.log(from, msg,img);
+      console.log("server received ready:",from);
       console.log(chalk.yellow("Users looking for opponents: ", Object.keys(waiting).length));
       matchUsers();
     });

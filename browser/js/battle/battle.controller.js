@@ -26,8 +26,8 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     function ready(stream) {
         $scope.voice.stream = stream;
         $scope.$digest;
-        console.log("im ready", user.getPic());
-        mySocket.emit('ready', user.getName(), sendImage(user.getPic()));
+        console.log("im ready");
+        mySocket.emit('ready', user.getName());
     }
 
     function sendImage(pic) {
@@ -50,10 +50,11 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     $scope.lose = function() {
 
     };
-    mySocket.on('foundOpponents', function(player, img) {
+    mySocket.on('foundOpponents', function(player) {
         $scope.opponent = opponent;
         $scope.opponent.name = player;
-        $scope.opponent.img = img;
+        // console.log("received data", img)
+        // $scope.opponent.img = img;
         console.log("your opponent is ", opponent.name);
         $state.go('battle.fight');
     });
