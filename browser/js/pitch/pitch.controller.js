@@ -25,16 +25,18 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
 
   //Happens too fast
   setTimeout(function() {
-    var voice = new practiceMicrophone(audioContext);
+      var voice = new practiceMicrophone(audioContext);
 
-    $scope.giveNote = function() {
-      randNote = noteRange[Math.floor(Math.random() * (noteRange.length))];
-      // console.log(randNote);
-      MusicalCanvas.addNote(canvas, randNote);
-      //create one of Tone's built-in synthesizers and connect it to the master output
-      //play a middle c for the duration of an 8th note
-      $scope.play(randNote);
-      voice.listen(randNote);
+      $scope.giveNote = function() {
+        randNote = noteRange[Math.floor(Math.random() * (noteRange.length))];
+        // console.log(randNote);
+        MusicalCanvas.addNote(canvas, randNote);
+        //create one of Tone's built-in synthesizers and connect it to the master output
+        //play a middle c for the duration of an 8th note
+        $scope.play(randNote);
+        setTimeout(function() {
+          voice.listen(randNote);
+        }, 1000);
     };
 
     $scope.repeatNote = function() {
@@ -49,8 +51,7 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
         $scope.play(randNote);
         MusicalCanvas.addNote(canvas, randNote);
       }
-    };
-    $scope.playPrev = function() {
+    }; $scope.playPrev = function() {
       var pos = noteRange.indexOf(randNote);
       if (pos !== -1) {
         randNote = (noteRange[pos - 1] || noteRange[noteRange.length - 1]);
@@ -67,7 +68,7 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
 
     $scope.pause = voice.pause;
   }, 500);
-  // <----- End of factory ----->
+// <----- End of factory ----->
 
 
 });

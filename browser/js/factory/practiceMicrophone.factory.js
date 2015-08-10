@@ -5,6 +5,7 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
     var correlationWorker;
     var analyzedTones = [];
     var noteToMatch;
+    var progressBar=0;
 
     function MicrophoneSample(context) {
         audioContext = context;
@@ -32,6 +33,7 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
 
     MicrophoneSample.prototype.listen = function(note) {
         analyzedTones = [];
+        progressBar=0;
         noteToMatch = note.slice(0, -1);
         this.startTime = audioContext.currentTime;
         gainNode.gain.value = 1;
@@ -177,20 +179,28 @@ app.factory('practiceMicrophone', function($log, CorrelationWork, Widget) {
                 var info = dominantFrequency.name.slice(2).trim();
                 var frequency = Math.round(dominantFrequency.frequency,-2) + ' Hz';
 
-                //update the widget
-                this.widget.show(sungNote, info, frequency);
+
                 analyzedTones.push(sungNote);
                 //First note equal start bar add 1;
                 //if last note equal then ++;
-
-
-                //check for sungNote
-                if (analyzedTones.length > 7) {
-                    for (var i = 1; i <= 7; i++) { //Here for difficulty
-                        if (noteToMatch != analyzedTones[analyzedTones.length - i]) return false;
-                    }
-                    this.pause();
+                var difficulty = 7;
+                if(sungNote === noteToMatch){
+                    progressBar++;
+                    if(progressBar===difficulty) this.pause();
+                } else {
+                    progressBar = 0;
                 }
+
+                //update the widget
+                this.widget.show(sungNote, info, frequency,progressBar/difficulty);
+                console.log(progressBar/difficulty);
+                //check for sungNote
+                // if (analyzedTones.length > difficulty) {
+                //     for (var i = 1; i <= difficulty; i++) { //Here for difficulty
+                //         if (noteToMatch !== analyzedTones[analyzedTones.length - i]) return false;
+                //     }
+                //     this.pause();
+                // }
             }
         }
     };
