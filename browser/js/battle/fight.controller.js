@@ -68,7 +68,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
-      mySocket.emit('ready', $scope.user.name,$scope.user.img);
+      mySocket.emit('ready', $scope.user.name, sendImage($scope.user.img));
       $state.go('battle.waiting'); //returning to waiting room
     }, 5000);
 
@@ -124,7 +124,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
-    mySocket.emit('ready', $scope.nickName,$scope.user.img);
+    mySocket.emit('ready', $scope.nickName,sendImage($scope.user.img));
     $state.go('battle.end');
   });
 

@@ -26,11 +26,17 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     function ready(stream) {
         $scope.voice.stream = stream;
         $scope.$digest;
-        console.log("im ready",user.getPic());
-        mySocket.emit('ready', user.getName(), user.getPic());
+        console.log("im ready", user.getPic());
+        mySocket.emit('ready', user.getName(), sendImage(user.getPic()));
     }
 
-
+    function sendImage(pic) {
+        var JSONimg = {
+            'type': 'img',
+            'data': pic,
+        };
+        return JSON.stringify(JSONimg);
+    }
     //register the player ID
     mySocket.on('connection successfull', function(id) {
         console.log("i'm connected as ", id);
@@ -44,7 +50,7 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     $scope.lose = function() {
 
     };
-    mySocket.on('foundOpponents', function(player,img) {
+    mySocket.on('foundOpponents', function(player, img) {
         $scope.opponent = opponent;
         $scope.opponent.name = player;
         $scope.opponent.img = img;
