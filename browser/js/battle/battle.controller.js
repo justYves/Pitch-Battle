@@ -3,10 +3,10 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     // console.log($scope.pic);
 
 
-
+    //1. Create the audio context before going to battle in order to avoid the lag
     var audioContext = new window.AudioContext;
     $scope.voice = new MicrophoneSample(audioContext);
-    $scope.voice.getMicrophoneInput(ready);
+    $scope.voice.getMicrophoneInput(ready); //Call the ready function when it's triggered
     $scope.nickName = user.getName();
     $scope.pic = user.getPic();
     $scope.messageLog = 'is Ready to  Pitch battle!';
@@ -22,12 +22,13 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
         $state.go('battle.waiting'); //returning to waiting room
     };
 
-    //Make the user ready to battle
+    //Make the user ready to battle function declaration
     function ready(stream) {
         $scope.voice.stream = stream;
         $scope.$digest;
-        console.log("im ready");
-        mySocket.emit('ready', user.getName());
+        console.log(user.getName() + "is ready and in the Waiting Room (battle Controller");
+        mySocket.emit('ready', user.getName(),sendImage(user.getPic())); //User get name is working //image now working
+
     }
 
     function sendImage(pic) {
@@ -37,11 +38,13 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
         };
         return JSON.stringify(JSONimg);
     }
+
     //register the player ID
     mySocket.on('connection successfull', function(id) {
         console.log("i'm connected as ", id);
         $scope.socketID = id;
     });
+
 
     $scope.win = function() {
 

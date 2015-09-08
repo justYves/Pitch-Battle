@@ -1,9 +1,7 @@
 app.controller('loginPicCtrl', function($scope, user, $state) {
   $scope.nickName = user.getName();
-  // var canvas;
-  // var context;
-  // var video;
-  // var videoObj;
+
+  //Create context for
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
   var video = document.getElementById("video");
@@ -18,7 +16,6 @@ app.controller('loginPicCtrl', function($scope, user, $state) {
 
   //Take pics
   $scope.takePic = function() {
-    console.log("take pic");
     navigator.getUserMedia(videoObj, function(stream) {
       source = window.URL.createObjectURL(stream);
       video.src = source;
@@ -28,33 +25,24 @@ app.controller('loginPicCtrl', function($scope, user, $state) {
 
 
   $scope.snap = function() {
+    console.log(user.getName() + " is taking a pic in the user Controller"); //user.getName is working;
     $scope.clicked2=false;
-    context.drawImage(video, 0, 0, 160, 160);
+    context.drawImage(video, 0, 0, 160, 160); // Dim is 240X240?
     video.pause();
     video.src="";
+    convertPic();
   };
 
   function convertCanvasToImage(canvas) {
     var image = new Image();
     image.src = canvas.toDataURL(); // save as data URL
-    console.log("image",image.src);
-  return image;
+    console.log("The pic I took was converted to Data URL",image.src);
+    console.log("Here is the JSON: ",JSON.stringify(image.src));
+  return image.src;
 }
 
-$scope.convertPic = function(){
+function convertPic(){
   user.setPic(convertCanvasToImage(canvas));
-};
-
-
+  console.log("converting the image and saving it on user", user.getPic()); //User.getPic working Here
+}
 });
-
-// navigator.getUserMedia({video: true, audio: true}, function(localMediaStream) {
-//     var video = document.querySelector('video');
-//     video.src = window.URL.createObjectURL(localMediaStream);
-
-//     // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
-//     // See crbug.com/110938.
-//     video.onloadedmetadata = function(e) {
-//       // Ready to go. Do some stuff.
-//     };
-//   }, errorCallback);

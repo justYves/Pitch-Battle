@@ -3,6 +3,8 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
 //load pic
     loadCanvas(user.getPic(),'profilePic');
     // loadCanvas(opponent.img,'opponentPic')
+    console.log("is there an opponent?", opponent); // has name but no image :()
+    console.log("does he have an image?",opponent.img);
 
     function loadCanvas(dataURL,elem) {
         var canvas = document.getElementById(elem);
@@ -14,21 +16,20 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
             context.drawImage(this, 0, 0);
         };
 
-        imageObj.src = dataURL.src;
+        imageObj.src = dataURL;
     }
-
-
 
   $scope.opponent = opponent;
   $scope.round = 1;
   $scope.opponent.hp = 100; //set health
   user.restart(); //set health
+  console.log("this is run at the beg of flight Ctrl, user: ",user.getAll()); //Working
   $scope.user = user.getAll();
   $scope.currentNote = '';
   var isOver = false;
   var voice = $scope.voice;
-  voice.createWidget();
-  voice.onStream();
+  voice.createWidget(); //Create Widget;
+  voice.onStream(); //open the audio context
 
 
   //Create Music canvas
@@ -77,10 +78,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
 
   //Game Mechanics
 
-  mySocket.once('fight', function(room) {
-    $scope.room = room;
-    console.log("I'm fighting in room: ", room);
-  });
+
 
   mySocket.on('new note', function(note) {
     $scope.currentNote = note;
@@ -125,15 +123,16 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
     } else {
       mySocket.emit("room", $scope.room, 'pitchSlap');
     }
-  }
+  };
 
   mySocket.on("end", function() {
     mySocket.removeAllListeners();
     mySocket.on('foundOpponents', function(player,img) {
+        console.log(player,img);
         $scope.opponent = opponent;
         $scope.opponent.name = player;
-        $scope.opponent.img=img;
-        // loadCanvas(img,"opponentPic")
+        $scope.opponent.img = img;
+        loadCanvas(img,"opponentPic")
         console.log(img);
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');

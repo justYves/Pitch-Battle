@@ -10,7 +10,7 @@ app.factory('user', function() {
   };
 
   var setName = function(name) {
-    if (name !== "") {
+    if (name !== undefined && name !=="") {
       user.name = name;
     }
     return user.name;

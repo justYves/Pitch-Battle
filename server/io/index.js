@@ -6,6 +6,13 @@ var randNote = require('./giveNote.js');
 var io = null;
 module.exports = function(server) {
 
+  //CHALK GUIDELINES TO FOLLOW
+  //GREEN CONNECTION
+  //YELLOW WAITING ROOM
+  //RED DISCONNECT
+  //PURPLE GAME MECHANICS
+
+  //Create server
   if (io) return io;
   io = socketio(server);
   var waiting = {}; //player waiting to play
@@ -13,9 +20,7 @@ module.exports = function(server) {
   var rooms = {}; // Object are easier to delete obj[key]
   var interval = 2000; //ms for note to appear
 
-
-  // console.log("!!!!!",randNote);
-  //io Logic Here
+//1.User connected
   var connectedUser = 0;
   io.on('connection', function(client) {
     clients[client.id] = client;
@@ -23,7 +28,22 @@ module.exports = function(server) {
 
     //Connection Status
     console.log(chalk.green('\t socket.io:: player ' + client.id + ' connected'));
+    //Print How many users are connected
     console.log(chalk.blue("Total connected user: ", ++connectedUser));
+
+    //Triggered when player accepted get Media print out the name we received
+    //Print out number of users in waiting Room
+    client.on('ready', function(from,img) {
+      client.name = from;
+      client.img = img;
+      waiting[client.id] = client;
+      console.log("server received ready: from",from);
+      // console.log("received image:", img); //Working
+      console.log(chalk.yellow("Users in waiting Room:", Object.keys(waiting).length));
+      matchUsers();
+    });
+
+
 
     //Matches player against each other <---- Put in another file--->
     function matchUsers() {
@@ -48,14 +68,14 @@ module.exports = function(server) {
         //notify user1
         user1.join(newRoom.id);
         user1.room = newRoom.id;
-        // console.log("sending",user2.img);
-        user1.emit('foundOpponents', user2.name); //change angular state
+        console.log("sending user2 img",user2.img);
+        user1.emit('foundOpponents', user2.name,user2.img); //change angular state
 
         //notify user2
         user2.join(newRoom.id);
         user2.room = newRoom.id;
-        // console.log("sending",user1.img);
-        user2.emit('foundOpponents', user1.name); //change angular state
+        console.log("sending user1 img",user1.img);
+        user2.emit('foundOpponents', user1.name,user1.img); //change angular state
 
         io.sockets.in(newRoom.id).on('leave', function() {
           console.log("someone left the room!");
@@ -99,15 +119,7 @@ module.exports = function(server) {
       client.leave(client.room);
     });
 
-    //Receive Name info and ready status from player
-    client.on('ready', function(from) {
-      client.name = from;
-      // client.img = img;
-      waiting[client.id] = client;
-      console.log("server received ready:",from);
-      console.log(chalk.yellow("Users looking for opponents: ", Object.keys(waiting).length));
-      matchUsers();
-    });
+
 
     //player disconnects
     client.on('disconnect', function() {
