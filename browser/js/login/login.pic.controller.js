@@ -27,7 +27,9 @@ app.controller('loginPicCtrl', function($scope, user, $state) {
   $scope.snap = function() {
     console.log(user.getName() + " is taking a pic in the user Controller"); //user.getName is working;
     $scope.clicked2=false;
-    context.drawImage(video, 0, 0, 160, 160); // Dim is 240X240?
+    context.drawImage(video, 160, 0, 480, 480, 0, 0, 240, 240);
+    // context.drawImage(video, 0, 0, 640, 480, 0, 0, 320, 240);
+    // context.drawImage(video, 0, 0, 320, 240); // Dim is 240X240?
     video.pause();
     video.src="";
     convertPic();

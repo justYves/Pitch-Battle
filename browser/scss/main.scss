@@ -94,39 +94,37 @@ body {}
     background: #18BC9C;
     border-radius: 0.5em;
     transition: 0.4s ease all;
-
 }
 
 #loginQuestion:hover {
-        background: white;
-        color: #000;
-        border: 1px solid black;
+    background: white;
+    color: #000;
+    border: 1px solid black;
 }
 
-#loginQuestion:focus{
-    outline:none;
+#loginQuestion:focus {
+    outline: none;
 }
 
 ::-webkit-input-placeholder {
     /* WebKit, Blink, Edge */
-
     color: white;
 }
+
 :-moz-placeholder {
     /* Mozilla Firefox 4 to 18 */
-
     color: white;
     opacity: 1;
 }
+
 ::-moz-placeholder {
     /* Mozilla Firefox 19+ */
-
     color: white;
     opacity: 1;
 }
+
 :-ms-input-placeholder {
     /* Internet Explorer 10-11 */
-
     color: white;
 }
 
@@ -136,14 +134,12 @@ body {}
 //     margin-left: 2vw;
 //     margin-right: 2vw;
 // }
-
 // #battleTop {
 //     margin-top:30px;
 // }
 // #battleTop>*{
 //     vertical-align: middle;
 // }
-
 #waitingMessage {
     margin-top: 10vh;
 }
@@ -156,8 +152,8 @@ body {}
 //     left: 0;
 //     right: 0
 // }
-
-#profilePic, #opponentPic {
+#profilePic,
+#opponentPic {
     position: absolute;
     top: 35px;
     left: 75px;
@@ -166,15 +162,21 @@ body {}
 }
 
 .hidden {
-    display:none;
+    display: none;
 }
 
-
+.photoArea {
+    border: 2px dashed white;
+    width: 140px;
+    height: 190px;
+    position: relative;
+    margin: 0 auto;
+    top: 40px;
+}
 
 // #fightScreen{
 //     position: relative;
 //     min-height: 50vh;
-
 // }
 //
 // video {
