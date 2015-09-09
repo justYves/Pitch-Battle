@@ -1,39 +1,38 @@
 <div class="row" id="fightScreen" style="background-color:white">
-<div class="row">
-    <div class="col-xs-12 text-center">
-        <h3> ROUND:{{round}} NOTE: {{currentNote}}</h3>
-        <canvas id="musical-note" width=100 height=100></canvas>
-    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h3> ROUND:{{round}} NOTE: {{currentNote}}</h3>
+            <canvas id="musical-note" width=100 height=100></canvas>
+        </div>
     </div>
     <div class="row">
-    <div class="col-xs-3">
-        <div class="row">
-            <canvas id="profilePic"></canvas>
-            <img id="bodyPic" ng-src="../assets/battle/Static%20%281%29.png">
+        <div class="col-xs-3">
+            <div class="row text-center">
+                {{user.name}} {{user.hp}} HP
+                <a ng-click="correct()">win</a>
+            </div>
+            <div class="row">
+                <canvas id="profilePic"></canvas>
+                <img id="bodyPic" ng-src="../assets/battle/Static%20%281%29.png">
+            </div>
         </div>
-        <div class="row text-center">
-            {{user.name}} {{user.hp}} HP
-            <div ng-click="correct()">
+        <div class="col-xs-6">
+            <div class="row text-center" id="WidgetAndVoice">
+                <!-- < ng-class="{'animated flipInY':reset}" -->
+                <canvas id="widget" width=300 height=300></canvas>
+                <canvas id="voice" width=100 height=100></canvas>
+            </div>
         </div>
-    </div>
-    <div class="col-xs-2">
-        <div class="row text-center" id="WidgetAndVoice">
-            <!-- < ng-class="{'animated flipInY':reset}" -->
-            <canvas id="widget" width=300 height=300></canvas>
-            <canvas id="voice" width=100 height=100></canvas>
+        <!--     <div class="col-xs-2"></div>
+<div class="col-xs-2"></div> -->
+        <div class="col-xs-3">
+            <div class="row text-center">
+                {{opponent.name}} {{opponent.hp}} HP
+            </div>
+            <div class="row">
+                <canvas id="opponentPic"></canvas>
+                <img id="bodyPic" ng-src="../assets/battle/Static%20%282%29.png">
+            </div>
         </div>
-    </div>
-    <div class="col-xs-2"></div>
-<div class="col-xs-2"></div>
-
-<div class="col-xs-3">
-    <div class="row">
-    <canvas id="opponentPic"></canvas>
-    <img id="bodyPic" ng-src="../assets/battle/Static%20%282%29.png">
-</div>
-    <div class="row text-center">
-            {{opponent.name}} {{opponent.hp}} HP
-    </div>
-</div>
     </div>
 </div>
