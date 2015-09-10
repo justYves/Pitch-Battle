@@ -9,7 +9,7 @@ app.factory('MicrophoneSample', function($log, CorrelationWork, Widget,mySocket,
 
     function MicrophoneSample(context) {
         audioContext = context;
-        console.log(audioContext);
+        // console.log(audioContext);
         this.WIDTH = 640;
         this.HEIGHT = 480;
         this.getMicrophoneInput;
@@ -26,7 +26,7 @@ app.factory('MicrophoneSample', function($log, CorrelationWork, Widget,mySocket,
     };
 
     MicrophoneSample.prototype.createWidget = function(){
-        console.log("widgetCreated");
+        // console.log("widgetCreated");
         this.widgetCanvas = $("#widget")[0];
         this.widget = new Widget(this.widgetCanvas, '#ffffff', '#2c3e50', '#F7D708', '#2c3e50', '#18bc9c');
         this.widget.show("", "", "", "");
@@ -208,7 +208,7 @@ app.factory('MicrophoneSample', function($log, CorrelationWork, Widget,mySocket,
                 }
 
                 //update the widget
-                console.log(progressBar / difficulty);
+                // console.log(progressBar / difficulty);
 
             }
         }

@@ -68,13 +68,13 @@ module.exports = function(server) {
         //notify user1
         user1.join(newRoom.id);
         user1.room = newRoom.id;
-        console.log("sending user2 img",user2.img);
+        // console.log("sending user2 img",user2.img); // working
         user1.emit('foundOpponents', user2.name,user2.img); //change angular state
 
         //notify user2
         user2.join(newRoom.id);
         user2.room = newRoom.id;
-        console.log("sending user1 img",user1.img);
+        // console.log("sending user1 img",user1.img); //working
         user2.emit('foundOpponents', user1.name,user1.img); //change angular state
 
         io.sockets.in(newRoom.id).on('leave', function() {
@@ -109,6 +109,7 @@ module.exports = function(server) {
       client.broadcast.to(roomId).emit(msg);
       if (msg === 'pitchSlap') {
         setTimeout(function() {
+          console.log("sending New Note to: ", roomId);
           io.to(roomId).emit('new note', randNote());
         }, interval);
       }

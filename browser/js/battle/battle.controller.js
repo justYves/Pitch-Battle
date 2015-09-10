@@ -53,11 +53,11 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     $scope.lose = function() {
 
     };
-    mySocket.on('foundOpponents', function(player) {
+    mySocket.on('foundOpponents', function(player,img) {
         $scope.opponent = opponent;
         $scope.opponent.name = player;
-        // console.log("received data", img)
-        // $scope.opponent.img = img;
+        console.log("received data", img)
+        $scope.opponent.img = img;
         console.log("your opponent is ", opponent.name);
         $state.go('battle.fight');
     });

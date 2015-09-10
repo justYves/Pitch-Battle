@@ -44,7 +44,7 @@ app.factory('Widget', function() {
         } else{
             this.ctx.fillStyle = percentage > 0 ?this.okColor : this.bgColor;
         }
-        console.log("current completion percentage: (from Widget Factory)", percentage);
+        // console.log("current completion percentage: (from Widget Factory)", percentage);
         this.ctx.fill();
         this.ctx.closePath();
 

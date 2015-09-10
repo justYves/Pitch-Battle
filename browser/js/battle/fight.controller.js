@@ -88,7 +88,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   });
 
   //Receive a hit
-  mySocket.on('pitchSlap', function hit() {
+  mySocket.on('pitchSlap', function() {
     console.log(mySocket.name + "received hit");
     voice.pause;
     $scope.user.hp = Math.max($scope.user.hp - 25, 0); //To be customized
@@ -107,6 +107,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
       mySocket.emit("room", $scope.room, 'end');
       $state.go('battle.end');
     } else {
+      console.log("this is run! sending pitchslap to ", $scope.room);
       mySocket.emit("room", $scope.room, 'pitchSlap');
     }
   });
@@ -121,6 +122,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
       mySocket.emit("room", $scope.room, 'end');
       $state.go('battle.end');
     } else {
+      console.log("this is run! sending pitchslap to ", $scope.room);
       mySocket.emit("room", $scope.room, 'pitchSlap');
     }
   };
