@@ -44,7 +44,10 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   mySocket.emit("room", $scope.room, 'ready');
 
   //Need to send a ready emit first ->then fight
-
+  mySocket.on("fight",function(room){
+    $scope.room = room;
+    console.log("the new room is", $scope.room)
+  })
 
   //opponent left Redirect to waiting
   mySocket.on('leave', function() {
