@@ -2,9 +2,10 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
 
 //load pic
     loadCanvas(user.getPic(),'profilePic');
-    // loadCanvas(opponent.img,'opponentPic')
-    console.log("is there an opponent?", opponent); // has name but no image :()
-    console.log("does he have an image?",opponent.img);
+    console.log("loading pic",opponent.img)
+    console.log(document.getElementById("opponentPic"));
+    loadCanvas(JSON.parse(opponent.img).data,'opponentPic');
+
 
     function loadCanvas(dataURL,elem) {
         var canvas = document.getElementById(elem);
@@ -30,6 +31,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   var voice = $scope.voice;
   voice.createWidget(); //Create Widget;
   voice.onStream(); //open the audio context
+
 
 
   //Create Music canvas
@@ -68,7 +70,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         $scope.opponent.name = player;
         $scope.opponent.img = img;
         loadCanvas(img,"opponentPic")
-        console.log(img);
+        console.log(document.getElementById("opponentPic"),img);
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
@@ -139,6 +141,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
         $scope.opponent.img = img;
         loadCanvas(img,"opponentPic")
         console.log(img);
+        console.log(document.getElementById("opponentPic"),img);
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
