@@ -1,4 +1,4 @@
-app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, opponent, MicrophoneSample) {
+app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, opponent, MicrophoneSample,game) {
     // $scope.pic = user.getPic();
     // console.log($scope.pic);
 
@@ -11,6 +11,7 @@ app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, oppo
     $scope.pic = user.getPic();
     $scope.messageLog = 'is Ready to  Pitch battle!';
     $scope.opponent = opponent;
+    $scope.won = game.won;
 
 
     $scope.logOut = function() {

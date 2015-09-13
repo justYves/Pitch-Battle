@@ -1,30 +1,30 @@
-app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $state, MicrophoneSample, MusicalCanvas, mySocket,$rootScope) {
+app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $state, MicrophoneSample, MusicalCanvas, mySocket, $rootScope,game) {
 
-//load pic
-    loadCanvas(user.getPic(),'profilePic');
-    console.log("loading pic",opponent.img)
-    console.log(document.getElementById("opponentPic"));
-    loadCanvas(JSON.parse(opponent.img).data,'opponentPic');
+  //load pic
+  loadCanvas(user.getPic(), 'profilePic');
+  console.log("loading pic", opponent.img)
+  console.log(document.getElementById("opponentPic"));
+  loadCanvas(JSON.parse(opponent.img).data, 'opponentPic');
 
 
-    function loadCanvas(dataURL,elem) {
-        var canvas = document.getElementById(elem);
-        var context = canvas.getContext('2d');
+  function loadCanvas(dataURL, elem) {
+    var canvas = document.getElementById(elem);
+    var context = canvas.getContext('2d');
 
-        // load image from data url
-        var imageObj = new Image();
-        imageObj.onload = function() {
-            context.drawImage(this, 0, 0);
-        };
+    // load image from data url
+    var imageObj = new Image();
+    imageObj.onload = function() {
+      context.drawImage(this, 0, 0);
+    };
 
-        imageObj.src = dataURL;
-    }
+    imageObj.src = dataURL;
+  }
 
   $scope.opponent = opponent;
   $scope.round = 1;
   $scope.opponent.hp = 100; //set health
   user.restart(); //set health
-  console.log("this is run at the beg of flight Ctrl, user: ",user.getAll()); //Working
+  console.log("this is run at the beg of flight Ctrl, user: ", user.getAll()); //Working
   $scope.user = user.getAll();
   $scope.currentNote = '';
   var isOver = false;
@@ -46,7 +46,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   mySocket.emit("room", $scope.room, 'ready');
 
   //Need to send a ready emit first ->then fight
-  mySocket.on("fight",function(room){
+  mySocket.on("fight", function(room) {
     $scope.room = room;
     console.log("the new room is", $scope.room)
   })
@@ -64,13 +64,13 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
     // },1000);
     setTimeout(function() {
       mySocket.removeAllListeners();
-      mySocket.on('foundOpponents', function(player,img) {
-        console.log(player,img);
+      mySocket.on('foundOpponents', function(player, img) {
+        console.log(player, img);
         $scope.opponent = opponent;
         $scope.opponent.name = player;
         $scope.opponent.img = img;
-        loadCanvas(img,"opponentPic")
-        console.log(document.getElementById("opponentPic"),img);
+        loadCanvas(img, "opponentPic")
+        console.log(document.getElementById("opponentPic"), img);
         console.log("your opponent is ", $scope.opponent.name);
         $state.go('battle.fight');
       });
@@ -88,7 +88,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   mySocket.on('new note', function(note) {
     $scope.currentNote = note;
     console.log("received note", note);
-    MusicalCanvas.addNote(canvas,note);
+    MusicalCanvas.addNote(canvas, note);
     voice.listen(note);
   });
 
@@ -102,49 +102,43 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
   });
 
   //Emit a hit to opponents
-  $scope.$on('correct', function () {
+  $scope.$on('correct', function() {
+    correct();
+  });
+
+  $scope.correct = function() {
+    correct();
+  };
+
+  function correct() {
     console.log(mySocket.name + "got it right!");
     voice.pause;
     $scope.currentNote = '';
     $scope.opponent.hp = Math.max($scope.opponent.hp - 25, 0); //To be customized
     $scope.round++;
     if ($scope.opponent.hp === 0) {
+      game.won;
       mySocket.emit("room", $scope.room, 'end');
       $state.go('battle.end');
     } else {
       console.log("this is run! sending pitchslap to ", $scope.room);
       mySocket.emit("room", $scope.room, 'pitchSlap');
     }
-  });
-
-  $scope.correct=function(){
-   console.log(mySocket.name + "got it right!");
-    voice.pause;
-    $scope.currentNote = '';
-    $scope.opponent.hp = Math.max($scope.opponent.hp - 25, 0); //To be customized
-    $scope.round++;
-    if ($scope.opponent.hp === 0) {
-      mySocket.emit("room", $scope.room, 'end');
-      $state.go('battle.end');
-    } else {
-      console.log("this is run! sending pitchslap to ", $scope.room);
-      mySocket.emit("room", $scope.room, 'pitchSlap');
-    }
-  };
+  }
 
   mySocket.on("end", function() {
     mySocket.removeAllListeners();
-    mySocket.on('foundOpponents', function(player,img) {
-        console.log(player,img);
-        $scope.opponent = opponent;
-        $scope.opponent.name = player;
-        $scope.opponent.img = img;
-        loadCanvas(img,"opponentPic")
-        console.log(img);
-        console.log(document.getElementById("opponentPic"),img);
-        console.log("your opponent is ", $scope.opponent.name);
-        $state.go('battle.fight');
-      });
+    mySocket.on('foundOpponents', function(player, img) {
+      console.log(player, img);
+      $scope.opponent = opponent;
+      $scope.opponent.name = player;
+      $scope.opponent.img = img;
+      loadCanvas(img, "opponentPic")
+      console.log(img);
+      console.log(document.getElementById("opponentPic"), img);
+      console.log("your opponent is ", $scope.opponent.name);
+      $state.go('battle.fight');
+    });
     mySocket.emit('ready', $scope.nickName);
     $state.go('battle.end');
   });

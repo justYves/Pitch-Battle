@@ -109,7 +109,7 @@ module.exports = function(server) {
       client.broadcast.to(roomId).emit(msg);
       if (msg === 'pitchSlap') {
         setTimeout(function() {
-          console.log("sending New Note to: ", room);
+          console.log("sending New Note to: ", roomId);
           io.to(roomId).emit('new note', randNote());
         }, interval);
       }

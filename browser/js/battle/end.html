@@ -1,2 +1,4 @@
 <button ng-click="replay()">Replay</button>
 <button ng-click="logOut()">Log Out</button>
+<h1 ng-show="won" id="waitingMessage" class="subheadline animated infinite pulse">Congratulations, You won the Pitch Battle!</h1>
+<h1 ng-show="!won" id="waitingMessage" class="subheadline animated infinite pulse">You lost. Game over!</h1>
