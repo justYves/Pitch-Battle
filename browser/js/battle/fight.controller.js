@@ -1,5 +1,6 @@
 app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $state, MicrophoneSample, MusicalCanvas, mySocket, $rootScope,game) {
 
+  game.won =false;
   //load pic
   loadCanvas(user.getPic(), 'profilePic');
   console.log("loading pic", opponent.img)
@@ -117,7 +118,7 @@ app.controller('FightCtrl', function($log, $location, opponent, user, $scope, $s
     $scope.opponent.hp = Math.max($scope.opponent.hp - 25, 0); //To be customized
     $scope.round++;
     if ($scope.opponent.hp === 0) {
-      game.won;
+      game.won = true;
       mySocket.emit("room", $scope.room, 'end');
       $state.go('battle.end');
     } else {
