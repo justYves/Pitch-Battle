@@ -1,7 +1,7 @@
 app.controller('BattleCtrl', function($log, $scope, $state, user, mySocket, opponent, MicrophoneSample,game) {
     // $scope.pic = user.getPic();
     // console.log($scope.pic);
-
+    console.log("Battle Ctrl ran");
 
     //1. Create the audio context before going to battle in order to avoid the lag
     var audioContext = new window.AudioContext;

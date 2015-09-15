@@ -20,6 +20,7 @@ app.config(function ($stateProvider) {
     })
     .state('battle.end',{
         url:'/end',
+        controller: 'EndCtrl',
         templateUrl:"js/battle/end.html"
     })
     ;
