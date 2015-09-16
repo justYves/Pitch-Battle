@@ -1,8 +1,11 @@
+<div id="container">
 <div class="row text-center">
+<h1 ng-show="won" id="waitingMessage" class="subheadline animated infinite pulse item-space">Congratulations, You won the Pitch Battle!</h1>
+<h1 ng-show="!won" id="waitingMessage" class="subheadline animated infinite pulse item-space">You lost. Game over!</h1>
+
     <button ng-mouseenter="hover1 = true; hovered1 = true" ng-mouseleave="hover1 = false" class="big button text-left item-space" ng-click="replay()">
         <h3 class="subheadline"> Replay <small ng-show="hovered1" class="text-nowrap"><i ng-class="{'animated rotateIn': hover1, 'animated fadeOut' : !hover1}" class="fa fa-chevron-right animated fadeOut"></i></small></h3> </button>
     <button ng-mouseenter="hover2 = true; hovered2 = true" ng-mouseleave="hover2 = false" class="big button text-left item-space" ng-click="replay()">
         <h3 class="subheadline"> Log Out <small ng-show="hovered2" class="text-nowrap"><i ng-class="{'animated rotateIn': hover2, 'animated fadeOut' : !hover2}" class="fa fa-chevron-right animated fadeOut"></i></small></h3> </button>
 </div>
-<h1 ng-show="won" id="waitingMessage" class="subheadline animated infinite pulse">Congratulations, You won the Pitch Battle!</h1>
-<h1 ng-show="!won" id="waitingMessage" class="subheadline animated infinite pulse">You lost. Game over!</h1>
+</div>
