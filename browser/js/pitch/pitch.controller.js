@@ -23,8 +23,8 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
 
   //Happens too fast
   setTimeout(function() {
-
       var voice = new practiceMicrophone(audioContext);
+
 
       $scope.giveNote = function() {
       voice.clearWidget();

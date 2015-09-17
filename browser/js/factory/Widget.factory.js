@@ -1,5 +1,4 @@
 app.factory('Widget', function() {
-
   //View a particular widget
   var CircleWidget = function(canvas, bgColor, deltaColor, okColor, fontColor, doneColor) {
     //canvas use to draw
