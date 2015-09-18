@@ -1,8 +1,9 @@
 <div class="row text-center">
     <div class="col-xs-12">
       <div class="row" id="noteBar">
-          <h1 id="randNoteTitle">{{randNote|| ''}} <small ng-show="randNote">({{randNoteFreq}} Hz)</small></h1>
-          <canvas id="musical-note" width=100 height=100></canvas>
+          <h1 id="randNoteTitle" ng-show="started">{{randNote|| ''}} <small ng-show="randNote">({{randNoteFreq}} Hz)</small></h1>
+          <h1 ng-hide="started" id="waitingMessage" class="subheadline animated infinite pulse item-space">Press Play to start!</h1>
+          <canvas ng-show="started" id="musical-note" width=100 height=100></canvas>
       </div>
 <!--       <div class="row">
           <input type="range" min="5" max="14"></input>

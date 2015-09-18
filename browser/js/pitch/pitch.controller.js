@@ -37,6 +37,7 @@ app.controller('PitchCtrl', function($rootScope, $scope, $http, practiceMicropho
         //play a middle c for the duration of an 8th note
 
         $scope.play(randNote);
+        $scope.started= true;
         setTimeout(function() {
           voice.listen(randNote);
           $scope.reset=false;
