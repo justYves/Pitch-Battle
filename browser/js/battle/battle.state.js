@@ -10,7 +10,7 @@ app.config(function ($stateProvider) {
         }
     })
     .state('battle.waiting',{
-        // url:'/waiting',
+        url:'/waiting',
         templateUrl: "js/battle/waiting-screen.html"
     })
     .state('battle.fight',{
